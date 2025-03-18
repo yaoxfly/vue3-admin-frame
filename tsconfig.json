@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+    "jsxImportSource": "vue",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "vite": ["./node_modules/vite"]
+    },
+    //允许使用import.meta.env
+    "types": ["vite/client"]
+  },
+  "include": [
+    "src/*",
+    "src/**/*.vue",
+    "src/**/*.tsx",
+    "src/**/*.jsx",
+    "src/**/*.ts",
+    "src/**/*.js"
+  ],
+  "exclude": ["node_modules"],
+  "extensions": [".js", ".ts", ".tsx", ".jsx", ".vue"],
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "allowSyntheticDefaultImports": true
+}

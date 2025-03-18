@@ -1,0 +1,80 @@
+@use '../../../../assets/style/base.scss' as *;
+$top-and-bottom-blocks-height: 40px;
+$height: 100vh;
+$width: 210px;
+
+.lay-menu {
+  position: relative;
+
+}
+
+
+/**
+ * 顶部标题栏
+ */
+
+.menu-title {
+  width: $width;
+  height: $top-and-bottom-blocks-height;
+  border-right: 1px solid $border;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  color: #303133;
+  transition: width 0.3s ease-in-out;
+
+
+  .logo {
+    width: 32px;
+    margin-left: 18px;
+  }
+
+  .system-name {
+    margin-left: 10px;
+    color: #000000d9;
+    font-weight: bold;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity 0.2s ease-in-out;
+  }
+}
+
+
+/**
+ * 侧边栏菜单
+ */
+
+.el-menu-vertical {
+  height: calc($height - #{2 * $top-and-bottom-blocks-height });
+  width: $width;
+  overflow: hidden;
+  overflow-y: auto;
+
+
+  .menu-icon {
+    width: 16px;
+    margin-left: 2px;
+    margin-right: 10px;
+  }
+}
+
+/**
+ * 侧边栏收缩图标
+ */
+.collapse-icon {
+  width: $width;
+  height: $top-and-bottom-blocks-height;
+  border-top: 1px solid $border;
+  border-right: 1px solid $border;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 16px;
+  transition-property: width;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+}

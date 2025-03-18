@@ -1,0 +1,4 @@
+{
+  "extends": ["@commitlint/config-conventional", "cz"],
+  "helpUrl": "https://github.com/yaoxfly/common/blob/main/packages/verify-commit/README.md#type"
+}

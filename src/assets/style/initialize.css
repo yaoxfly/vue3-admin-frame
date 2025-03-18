@@ -1,0 +1,61 @@
+/*常用的一些初始化样式--一定要放在element-ui的前面，某些样式可能会影响element-ui的类*/
+
+/* 1. 全局样式重置 */
+* {
+  /*css3的盒子模型，可以让border和padding不会撑大盒子。*/
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/*em和i协调的文字不倾斜*/
+em,
+i {
+  font-style: normal;
+}
+
+/* 去掉li的小圆点*/
+
+li {
+  list-style: none;
+}
+
+img {
+  /*border:0 照顾低版本浏览器， 如果图片外面包含了链接会有边框的问题*/
+  border: 0;
+  /* 取消图片底侧有空白缝隙的问题*/
+  vertical-align: middle;
+}
+
+button {
+  /*当我们鼠标经过button 按钮的时候，鼠标会变成小手*/
+  cursor: pointer;
+}
+
+a {
+  color: inherit; /* 继承父元素的颜色 */
+  text-decoration: inherit; /* 去除默认的下划线 */
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0; /* 去除默认的 margin */
+}
+
+p {
+  margin: 0; /* 去除默认的 margin */
+}
+
+
+ol, ul {
+  list-style: none; /* 去除默认的列表符号 */
+  margin: 0; /* 去除默认的 margin */
+  padding: 0; /* 去除默认的 padding */
+}
+
+svg {
+  display: inline-block;
+  vertical-align: middle;
+}
