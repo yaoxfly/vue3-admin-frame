@@ -5,6 +5,7 @@ import { Document, Menu as IconMenu, Location, Setting } from '@element-plus/ico
 import localIcon from '@/assets/logo.png'
 import { MenuItem } from './component/lay-menu/src/types'
 import styles from './index.module.scss'
+import LayTag from './component/lay-tag/src'
 export default defineComponent({
   name: 'Layout',
   setup () {
@@ -44,12 +45,11 @@ export default defineComponent({
 
     return () => (
       <div class={styles.layout}>
-
-         <LayMenu data={menu} logo={localIcon}></LayMenu>
-
+        <LayMenu data={menu} logo={localIcon}></LayMenu>
         <div class={styles['layout-right']}>
-        <LayHeaderBar></LayHeaderBar>
-        <router-view />
+          <LayHeaderBar></LayHeaderBar>
+          <LayTag></LayTag>
+          <router-view />
         </div>
       </div>
     )
