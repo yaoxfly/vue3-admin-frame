@@ -190,7 +190,7 @@ export default ({ mode, command }: ConfigEnv): UserConfigExport => defineConfig(
       plugins: [
         postcssImport,
         autoprefixer,
-        postcsspxtoviewport8plugin(postCssPxToViewportConfig),
+        // postcsspxtoviewport8plugin(postCssPxToViewportConfig),
         tailwindcss
 
       ]
