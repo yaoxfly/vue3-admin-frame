@@ -2,6 +2,7 @@ import Child from './child'
 import { btnParam } from './types'
 import { useTestStore } from '@/store/test-store'
 import user from '@/apis/user'
+import Container from '@/component/container/src/index'
 export default defineComponent({
   name: 'Father',
   setup () {
@@ -52,6 +53,8 @@ export default defineComponent({
     getUserInfo()
 
     return () => <>
+
+    <Container >
       <div>
        <button onClick={() => routerLink()}>路由跳转,调整到首页;</button>
       </div>
@@ -68,6 +71,7 @@ export default defineComponent({
         }}
       >
       </Child>
+      </Container>
     </>
   }
 })
