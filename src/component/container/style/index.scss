@@ -1,0 +1,44 @@
+@use '@/assets/style/base.scss' as *;
+
+.container {
+  flex: 1;
+  background-color: #fff;
+  overflow: visible;
+  margin: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+
+.container-scroll {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f5f7fa;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c0c4cc;
+    border-radius: 4px;
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: #c0c4cc #f5f7fa;
+}
+
+.container-static {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
