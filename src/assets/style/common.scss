@@ -1,3 +1,5 @@
+@use './base.scss' as *;
+
 :root {
   /* -----基础颜色----- */
 
@@ -69,26 +71,29 @@
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   width: 100%;
-  background: #fff;
+  background: $page-background-color;
 }
-
 
 /* 整个滚动条 */
 ::-webkit-scrollbar {
-  width: 6px; /* 滚动条宽度 */
-  height: 6px; /* 滚动条高度 */
+  width: 6px;
+  /* 滚动条宽度 */
+  height: 6px;
+  /* 滚动条高度 */
 }
 
 /* 滚动条轨道 */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; /* 轨道背景色 */
-  border-radius: 10px; /* 圆角 */
+  background: #f1f1f1;
+  /* 轨道背景色 */
+  border-radius: 10px;
+  /* 圆角 */
 }
 
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
-  background: #c0c4cc; /* 滑块背景色 */
-  border-radius: 10px; /* 圆角 */
+  background: #c0c4cc;
+  /* 滑块背景色 */
+  border-radius: 10px;
+  /* 圆角 */
 }
-
-
