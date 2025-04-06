@@ -5,9 +5,8 @@ $width: 210px;
 
 .lay-menu {
   position: relative;
-
+  user-select: none;
 }
-
 
 /**
  * 顶部标题栏
@@ -77,4 +76,5 @@ $width: 210px;
   transition-property: width;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
+  background: #fff;
 }

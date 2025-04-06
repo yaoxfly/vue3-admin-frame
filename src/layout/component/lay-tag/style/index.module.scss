@@ -22,6 +22,7 @@
   height: 34px;
   border-left: 1px solid $border;
   cursor: pointer;
+  background: #fff;
 }
 
 /* 主容器 - 控制滚动边界 */
@@ -74,7 +75,6 @@
 .lay-tag {
   width: 100%;
   height: 34px;
-
   position: relative;
   display: flex;
   align-items: center;
@@ -84,18 +84,29 @@
   /* 标签滚动区域 */
   .tags-scroll {
     flex: 1;
+    position: relative;
     display: flex;
     overflow-x: auto;
+    overflow-y: hidden;
     height: 100%;
     scrollbar-width: none;
+    /* Firefox */
     -ms-overflow-style: none;
+    /* IE and Edge */
     padding: 0 32px;
-    scroll-behavior: smooth;
     box-sizing: border-box;
-    scroll-behavior: smooth; // 启用原生平滑滚动
+    scroll-behavior: smooth;
+    /* 启用原生平滑滚动 */
+    -webkit-overflow-scrolling: touch;
+    /* 在iOS上提供惯性滚动 */
+    white-space: nowrap;
 
+    /* Webkit browsers like Chrome/Safari */
     &::-webkit-scrollbar {
       display: none;
+      width: 0;
+      height: 0;
+      background: transparent;
     }
 
     >span {
@@ -119,28 +130,80 @@
   .is-active {
     :global {
       .el-tag {
-        color: var(--el-color-primary);
-        border-bottom: 2px solid var(--el-color-primary);
-        border-right: 1px solid #f2F6FC;
-        border-left: 1px solid #f2F6FC;
-        background-color: rgba(var(--el-color-primary-rgb), 0.1);
+        color: #fff;
+        font-weight: 500;
+        border: none;
+        background: linear-gradient(135deg,
+            var(--el-color-primary) 0%,
+            var(--el-color-primary-light-3) 50%,
+            var(--el-color-primary) 100%);
+        background-size: 200% auto;
+        animation: shimmer 3s infinite linear;
+        box-shadow:
+          0 2px 8px -2px rgba(var(--el-color-primary-rgb), 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+
+        @keyframes shimmer {
+          0% {
+            background-position: 0% center;
+          }
+
+          100% {
+            background-position: 200% center;
+          }
+        }
+
+        // 光亮效果
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -120%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg,
+              transparent 0%,
+              rgba(255, 255, 255, 0.3) 50%,
+              transparent 100%);
+          transform: skewX(-25deg);
+          animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+          0% {
+            left: -120%;
+          }
+
+          50% {
+            left: 120%;
+          }
+
+          100% {
+            left: 120%;
+          }
+        }
 
         .el-tag__close {
           opacity: 1;
+          color: rgba(255, 255, 255, 0.9);
+          background: rgba(0, 0, 0, 0.15);
+          border-radius: 50%;
         }
 
-        &:hover {
-          color: var(--el-color-primary);
-          border-bottom-color: var(--el-color-primary);
-          background-color: rgba(var(--el-color-primary-rgb), 0.15);
-
-          &::after {
-            width: 0;
-          }
-
-          .el-tag__close {
-            opacity: 1;
-          }
+        /* 确保hover和focus状态保持一致 */
+        &:hover,
+        &:focus,
+        &:active {
+          color: #fff !important;
+          background: linear-gradient(135deg,
+              var(--el-color-primary) 0%,
+              var(--el-color-primary-light-3) 50%,
+              var(--el-color-primary) 100%);
         }
       }
     }
@@ -198,6 +261,7 @@
   :global {
     .el-tag {
       position: relative;
+      user-select: none;
       height: 34px;
       line-height: 30px;
       border-radius: 0;
@@ -217,6 +281,15 @@
       box-sizing: border-box;
       font-size: 13px;
       font-weight: 500;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+
+      /* 防止点击时出现蓝底 */
+      &:focus,
+      &:active {
+        outline: none;
+        background-color: #fff;
+      }
 
       &::after {
         content: '';
@@ -234,7 +307,7 @@
         color: var(--el-color-primary);
 
         &::after {
-          width: 100%;
+          width: 0;
         }
 
         .el-tag__close {
