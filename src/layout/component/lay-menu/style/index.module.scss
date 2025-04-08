@@ -53,11 +53,33 @@ $width: 210px;
   overflow: hidden;
   overflow-y: auto;
 
-
   .menu-icon {
     width: 16px;
     margin-left: 2px;
     margin-right: 10px;
+  }
+
+  :global {
+
+    // 自定义菜单高亮样式
+    .el-menu-item.is-active {
+      background-color: rgba(var(--color-primary-base), 0.08);
+      color: var(--el-color-primary);
+      font-weight: 500;
+      position: relative;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 0 0 1px rgba(var(--color-primary-base), 0.1);
+    }
+
+    // 确保收缩状态下的样式不变
+    .el-menu--collapse {
+      .el-menu-item.is-active {
+        background-color: rgba(var(--color-primary-base), 0.08);
+        color: var(--el-color-primary);
+        font-weight: 500;
+        box-shadow: inset 0 0 0 1px rgba(var(--color-primary-base), 0.1);
+      }
+    }
   }
 }
 
