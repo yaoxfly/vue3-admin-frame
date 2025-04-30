@@ -351,3 +351,52 @@
     }
   }
 }
+
+/* 右键菜单样式 */
+.context-menu {
+  position: fixed;
+  z-index: 1000;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 5px 0;
+  min-width: 150px;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #606266;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #f5f7fa;
+        color: var(--el-color-primary);
+      }
+    }
+  }
+}
+
+/* 下拉菜单样式增强 */
+.lay-tag-drop-down-menu {
+  &:hover {
+    background: #f5f7fa;
+    color: var(--el-color-primary);
+  }
+
+  :global {
+    .el-icon {
+      transition: transform 0.3s;
+    }
+  }
+
+  &:hover :global(.el-icon) {
+    transform: scale(1.1);
+    color: var(--el-color-primary);
+  }
+}

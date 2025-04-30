@@ -1,31 +1,289 @@
-import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue'
+import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { ArrowLeft, ArrowRight, ArrowDown } from '@element-plus/icons-vue'
 import styles from '../style/index.module.scss'
+import { useLayTag } from '@/store'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+
+// 标签数据结构定义
+interface TagItem {
+  path: string // 标签对应的路由路径
+  title: string // 标签显示的标题
+}
 
 export default defineComponent({
   name: 'LayTag',
   inheritAttrs: false,
   setup () {
-    const activeIndex = ref<number | null>(null)
-    const tags = Array.from({ length: 30 }, (_, i) => `标签 ${i + 1}`)
+    const router = useRouter()
+    const layTagStore = useLayTag()
 
-    const scrollContainer = ref<HTMLElement | null>(null)
-    const containerWrapper = ref<HTMLElement | null>(null)
+    // ===== 基础数据 =====
+    // 从store获取标签列表和当前活动标签
+    const tags = computed(() => layTagStore.tags)
+    const activeTag = computed(() => layTagStore.activeTag)
+
+    // ===== DOM引用 =====
+    const scrollContainer = ref<HTMLElement | null>(null) // 标签滚动容器
+    const containerWrapper = ref<HTMLElement | null>(null) // 标签外层容器
+
+    // ===== 状态控制 =====
+    // 控制左右滚动箭头显示
     const showLeftArrow = ref(false)
     const showRightArrow = ref(false)
 
-    const handleTagClick = (index: number) => {
-      activeIndex.value = index
-      scrollToTag(index)
+    // ===== 右键菜单相关 =====
+    const rightClickedTag = ref<TagItem | null>(null) // 当前右键点击的标签
+    const contextMenuVisible = ref(false) // 右键菜单是否可见
+    const contextMenuX = ref(0) // 右键菜单X坐标
+    const contextMenuY = ref(0) // 右键菜单Y坐标
+
+    // ===== 基础标签操作 =====
+
+    /**
+     * 点击标签时的处理
+     * @param path 标签路径
+     */
+    const handleTagClick = (path: string) => {
+      // 激活标签并跳转到对应路由
+      layTagStore.setActiveTag(path)
+      router.push(path)
+
+      // 将标签滚动到可见区域
+      const index = tags.value.findIndex((tag: TagItem) => tag.path === path)
+      if (index !== -1) {
+        scrollToTag(index)
+      }
     }
 
+    /**
+     * 关闭单个标签
+     * @param e 事件对象
+     * @param path 要关闭的标签路径
+     */
+    const handleTagClose = (e: MouseEvent, path: string) => {
+      e.stopPropagation() // 阻止事件冒泡，避免触发标签点击
+
+      // 找到要关闭的标签索引
+      const closeIndex = tags.value.findIndex((tag: TagItem) => tag.path === path)
+      if (closeIndex === -1) return // 找不到标签则不处理
+
+      // 判断是否关闭的是当前激活的标签
+      const isActiveTag = path === activeTag.value
+
+      // 确定关闭后要跳转的标签
+      let targetIndex = -1
+      if (isActiveTag) {
+        if (closeIndex === tags.value.length - 1) {
+          // 如果关闭的是最后一个标签，则跳转到前一个
+          targetIndex = Math.max(0, closeIndex - 1)
+        } else {
+          // 否则跳转到下一个标签
+          targetIndex = closeIndex + 1
+        }
+      }
+
+      // 获取目标路径
+      const targetPath = targetIndex !== -1 ? tags.value[targetIndex]?.path : undefined
+
+      // 从store中移除标签
+      layTagStore.removeTag(path)
+
+      // 如果关闭的是当前标签且还有其他标签，则跳转到目标标签
+      if (isActiveTag && targetPath && tags.value.length > 0) {
+        handleTagClick(targetPath)
+      }
+    }
+
+    // ===== 批量操作标签 =====
+
+    /**
+     * 关闭除当前标签外的所有标签
+     * @param currentPath 当前标签路径
+     */
+    const closeOtherTags = (currentPath: string) => {
+      if (tags.value.length <= 1) return // 只有一个标签时不处理
+
+      // 查找当前标签信息
+      const currentTag = tags.value.find((tag: TagItem) => tag.path === currentPath)
+      if (currentTag) {
+        // 清空所有标签后，重新添加当前标签
+        layTagStore.clearAllTags()
+        layTagStore.setTag(currentTag.path, currentTag.title)
+        layTagStore.setActiveTag(currentPath)
+      }
+
+      ElMessage.success('已关闭其他标签')
+    }
+
+    /**
+     * 关闭所有标签
+     */
+    const closeAllTags = () => {
+      layTagStore.clearAllTags()
+      // 跳转到首页
+      router.push('/')
+      ElMessage.success('已关闭所有标签')
+    }
+
+    /**
+     * 关闭当前标签左侧的所有标签
+     * @param currentPath 当前标签路径
+     */
+    const closeLeftTags = (currentPath: string) => {
+      // eslint-disable-next-line no-debugger
+      // debugger
+      // 查找当前标签的索引
+      const currentIndex = tags.value.findIndex((tag: TagItem) => tag.path === currentPath)
+
+      if (currentIndex > 0) {
+        // 保留当前标签及右侧标签
+        const keepTags = tags.value.slice(currentIndex)
+
+        // 重建标签列表
+        layTagStore.clearAllTags()
+        keepTags.forEach((tag: TagItem) => {
+          layTagStore.setTag(tag.path, tag.title)
+        })
+
+        // 设置当前标签为活动标签
+        layTagStore.setActiveTag(currentPath)
+
+        ElMessage.success('已关闭左侧标签')
+      }
+    }
+
+    /**
+     * 关闭当前标签右侧的所有标签
+     * @param currentPath 当前标签路径
+     */
+    const closeRightTags = (currentPath: string) => {
+      // eslint-disable-next-line no-debugger
+      // debugger
+      // 查找当前标签的索引
+      const currentIndex = tags.value.findIndex((tag: TagItem) => tag.path === currentPath)
+
+      if (currentIndex !== -1 && currentIndex < tags.value.length - 1) {
+        // 保留左侧标签及当前标签
+        const keepTags = tags.value.slice(0, currentIndex + 1)
+
+        // 重建标签列表
+        layTagStore.clearAllTags()
+        keepTags.forEach((tag: TagItem) => {
+          layTagStore.setTag(tag.path, tag.title)
+        })
+
+        // 设置当前标签为活动标签
+        layTagStore.setActiveTag(currentPath)
+
+        ElMessage.success('已关闭右侧标签')
+      }
+    }
+
+    // ===== 右键菜单相关 =====
+
+    /**
+     * 处理标签右键点击，显示上下文菜单
+     * @param e 鼠标事件
+     * @param tag 点击的标签对象
+     */
+    const handleContextMenu = (e: MouseEvent, tag: TagItem) => {
+      e.preventDefault() // 阻止默认右键菜单
+
+      // 记录右键点击的标签和位置
+      rightClickedTag.value = tag
+      contextMenuX.value = e.clientX
+      contextMenuY.value = e.clientY
+
+      // 显示自定义右键菜单
+      contextMenuVisible.value = true
+    }
+
+    /**
+     * 处理底部下拉菜单命令
+     * @param command 菜单命令
+     */
+    const handleDropdownCommand = (command: string) => {
+      // 对当前活动标签执行操作
+      const currentPath = activeTag.value
+      if (!currentPath) return
+
+      // 根据命令执行相应操作
+      switch (command) {
+        case 'closeOthers':
+          closeOtherTags(currentPath)
+          break
+        case 'closeAll':
+          closeAllTags()
+          break
+        case 'closeLeft':
+          closeLeftTags(currentPath)
+          break
+        case 'closeRight':
+          closeRightTags(currentPath)
+          break
+        case 'refresh':
+          router.go(0) // 刷新当前页面
+          break
+      }
+    }
+
+    /**
+     * 处理右键菜单项点击
+     * @param command 菜单命令
+     */
+    const handleContextMenuClick = (command: string) => {
+      if (!rightClickedTag.value) return
+
+      const path = rightClickedTag.value.path
+
+      // 根据命令执行相应操作
+      switch (command) {
+        case 'closeTag':
+          handleTagClose(new MouseEvent('click'), path)
+          break
+        case 'closeOthers':
+          closeOtherTags(path)
+          break
+        case 'closeLeft':
+          closeLeftTags(path)
+          break
+        case 'closeRight':
+          closeRightTags(path)
+          break
+        case 'closeAll':
+          closeAllTags()
+          break
+        case 'refresh':
+          router.go(0) // 刷新当前页面
+          break
+      }
+
+      hideContextMenu()
+    }
+
+    /**
+     * 隐藏右键菜单
+     */
+    const hideContextMenu = () => {
+      contextMenuVisible.value = false
+    }
+
+    // ===== 滚动相关 =====
+
+    /**
+     * 滚动到指定标签
+     * @param index 标签索引
+     */
     const scrollToTag = (index: number) => {
+      // eslint-disable-next-line no-debugger
       if (!scrollContainer.value) return
 
       const container = scrollContainer.value
       const tagElement = container.children[index] as HTMLElement
       if (!tagElement) return
 
+      // 计算滚动位置，使标签居中显示
       const containerWidth = container.clientWidth
       const tagLeft = tagElement.offsetLeft
       const tagWidth = tagElement.offsetWidth
@@ -36,31 +294,45 @@ export default defineComponent({
       })
     }
 
+    /**
+     * 向左或向右滚动标签容器
+     * @param direction 滚动方向
+     */
     const scrollTo = (direction: 'left' | 'right') => {
       if (!scrollContainer.value) return
 
       const container = scrollContainer.value
-      const scrollAmount = container.clientWidth * 0.1
+      const scrollAmount = container.clientWidth * 0.1 // 滚动量为容器宽度的10%
 
+      // 执行滚动
       container.scrollTo({
         left: direction === 'left'
-          ? Math.max(0, container.scrollLeft - scrollAmount)
-          : Math.min(container.scrollWidth, container.scrollLeft + scrollAmount),
+          ? Math.max(0, container.scrollLeft - scrollAmount) // 向左滚动，不小于0
+          : Math.min(container.scrollWidth, container.scrollLeft + scrollAmount), // 向右滚动，不超过最大宽度
         behavior: 'smooth'
       })
     }
 
+    /**
+     * 更新左右箭头显示状态
+     */
     const updateArrowsVisibility = () => {
+      // eslint-disable-next-line no-debugger
+      // debugger
       if (!scrollContainer.value || !containerWrapper.value) return
 
       const container = scrollContainer.value
+
+      // 判断是否可以向左滚动
       const hasScrollBefore = container.scrollLeft > 10
+      // 判断是否可以向右滚动
       const hasScrollAfter = container.scrollLeft + 10 < container.scrollWidth - container.clientWidth
 
+      // 更新箭头显示状态
       showLeftArrow.value = hasScrollBefore
       showRightArrow.value = hasScrollAfter
 
-      // 更新遮罩类名
+      // 更新容器样式，显示滚动阴影
       if (hasScrollBefore) {
         containerWrapper.value.classList.add(styles['has-scroll-before'])
       } else {
@@ -74,29 +346,58 @@ export default defineComponent({
       }
     }
 
+    // ===== 生命周期钩子 =====
+
     onMounted(() => {
+      // 初始化滚动事件监听
       if (scrollContainer.value) {
+        // 延迟执行初始箭头状态更新，确保DOM已渲染
         setTimeout(updateArrowsVisibility, 100)
+
+        // 添加滚动和窗口大小变化事件监听
         scrollContainer.value.addEventListener('scroll', updateArrowsVisibility)
         window.addEventListener('resize', updateArrowsVisibility)
       }
+
+      // 初始化当前路由标签
+      const currentPath = router.currentRoute.value.path
+      const currentRoute = router.currentRoute.value
+      const title = currentRoute.meta?.title as string || currentRoute.name?.toString() || '未命名页面'
+      layTagStore.setTag(currentPath, title)
+
+      // 添加全局点击事件用于隐藏右键菜单
+      document.addEventListener('click', hideContextMenu)
     })
 
     onBeforeUnmount(() => {
+      // 移除事件监听器
       if (scrollContainer.value) {
         scrollContainer.value.removeEventListener('scroll', updateArrowsVisibility)
         window.removeEventListener('resize', updateArrowsVisibility)
       }
+
+      document.removeEventListener('click', hideContextMenu)
     })
 
-    return () => (
-      <div class={styles['lay-tag-wrapper']}>
+    // 下拉菜单选项
+    const dropdownItems = [
+      { command: 'closeOthers', text: '关闭其他标签' },
+      { command: 'closeAll', text: '关闭所有标签' },
+      { command: 'closeLeft', text: '关闭左侧标签' },
+      { command: 'closeRight', text: '关闭右侧标签' },
+      { command: 'refresh', text: '刷新当前页面' }
+    ]
 
+    // 渲染组件
+    return () => (
+      <div class={styles['lay-tag-wrapper']} onClick={hideContextMenu}>
+        {/* 标签容器 */}
         <div
           ref={containerWrapper}
           class={styles['lay-tag-container']}
         >
           <div class={styles['lay-tag']}>
+            {/* 左侧滚动箭头 */}
             {showLeftArrow.value && (
               <div
                 class={styles['scroll-arrow-left']}
@@ -106,21 +407,26 @@ export default defineComponent({
               </div>
             )}
 
+            {/* 标签滚动区域 */}
             <div
               class={styles['tags-scroll']}
               ref={scrollContainer}
             >
-              {tags.map((tag, index) => (
+              {tags.value.map((tag: TagItem, index: number) => (
                 <span
                   key={index}
-                  class={activeIndex.value === index ? styles['is-active'] : ''}
-                  onClick={() => handleTagClick(index)}
+                  class={activeTag.value === tag.path ? styles['is-active'] : ''}
+                  onClick={() => handleTagClick(tag.path)}
+                  onContextmenu={(e) => handleContextMenu(e, tag)}
                 >
-                  <el-tag closable>{tag}</el-tag>
+                  <el-tag closable onClose={(e: MouseEvent) => handleTagClose(e, tag.path)}>
+                    {tag.title}
+                  </el-tag>
                 </span>
               ))}
             </div>
 
+            {/* 右侧滚动箭头 */}
             {showRightArrow.value && (
               <div
                 class={styles['scroll-arrow-right']}
@@ -129,15 +435,47 @@ export default defineComponent({
                 <el-icon><ArrowRight /></el-icon>
               </div>
             )}
-
           </div>
-
         </div>
 
-        <div class={styles['lay-tag-drop-down-menu']} >
-        <el-icon><ArrowDown /></el-icon>
+        {/* 底部下拉菜单 */}
+        <div class={styles['lay-tag-drop-down-menu']}>
+          <el-dropdown trigger="click">
+            {{
+              dropdown: () => (
+                <el-dropdown-menu>
+                  {dropdownItems.map((item, index) => (
+                    <el-dropdown-item key={index} onClick={() => handleDropdownCommand(item.command)}>
+                      {item.text}
+                    </el-dropdown-item>
+                  ))}
+                </el-dropdown-menu>
+              ),
+              default: () => <el-icon><ArrowDown /></el-icon>
+            }}
+          </el-dropdown>
         </div>
 
+        {/* 右键菜单 */}
+        {contextMenuVisible.value && rightClickedTag.value && (
+          <div
+            class={styles['context-menu']}
+            style={{
+              left: `${contextMenuX.value}px`,
+              top: `${contextMenuY.value}px`
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ul>
+              <li onClick={() => handleContextMenuClick('closeTag')}>关闭当前标签</li>
+              <li onClick={() => handleContextMenuClick('closeOthers')}>关闭其他标签</li>
+              <li onClick={() => handleContextMenuClick('closeLeft')}>关闭左侧标签</li>
+              <li onClick={() => handleContextMenuClick('closeRight')}>关闭右侧标签</li>
+              <li onClick={() => handleContextMenuClick('closeAll')}>关闭所有标签</li>
+              <li onClick={() => handleContextMenuClick('refresh')}>刷新当前页面</li>
+            </ul>
+          </div>
+        )}
       </div>
     )
   }

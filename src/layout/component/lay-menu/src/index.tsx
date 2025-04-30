@@ -2,7 +2,9 @@ import { defineComponent, ref, h, PropType } from 'vue'
 import styles from '../style/index.module.scss'
 import { Expand, Fold } from '@element-plus/icons-vue'
 import { MenuItem } from './types'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { useLayTag } from '@/store/lay-tag'
+
 export default defineComponent({
   name: 'LayMenu',
   inheritAttrs: false,
@@ -19,6 +21,8 @@ export default defineComponent({
   },
   setup (props, { attrs, slots }) {
     const router = useRouter()
+    const route = useRoute()
+    const layTagStore = useLayTag()
     const isCollapse = ref(false)
 
     const renderIcon = (icon: any) => {
@@ -29,8 +33,11 @@ export default defineComponent({
       }
     }
 
-    const routerPush = (path: string) => {
-      router.push({ path })
+    const routerPush = (path: string, title: string) => {
+      router.push({ path }).then(() => {
+        // 路由跳转成功后，将路由信息保存到lay-tag中
+        layTagStore.setTag(path, title)
+      })
     }
 
     const renderMenu = (items: MenuItem[]) => {
@@ -66,7 +73,7 @@ export default defineComponent({
         } else {
           // Render el-menu-item
           return (
-            <el-menu-item {...rest} onClick={() => routerPush(rest.index as string)}>
+            <el-menu-item {...rest} onClick={() => routerPush(rest.index as string, item.title || '未命名')}>
               {icon && renderIcon(icon)}
               <span>{item.title}</span>
             </el-menu-item>
