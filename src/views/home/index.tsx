@@ -1,6 +1,7 @@
 import config from '@/config'
 import { formDataAppend, download as downloadFile } from '@/request/hook'
 import user from '@/apis/user'
+import Container from '@/component/container/src/index'
 export default defineComponent({
   name: 'Home',
   setup () {
@@ -47,6 +48,7 @@ export default defineComponent({
       console.log(route.query, '传递给home页面的参数')
       return (
           <>
+           <Container >
             <input type="file" onChange={(event) => handleFileChange(event)} />
             <button onClick={() => uploadFile()}>上传文件</button>
             <button onClick={() => download()}>下载文件</button>
@@ -63,6 +65,7 @@ export default defineComponent({
             </div>
 
             <input v-model={input.value} class='tw-w-500 tw-border tw-border-solid tw-border-black' ></input>
+            </Container>
           </>
       )
     }

@@ -5,8 +5,17 @@ import { createPinia } from 'pinia'
 import '@/assets/style/index.scss'
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
-createApp(App)
-  .use(router)
-  .use(ElementPlus)
-  .use(createPinia())
-  .mount('#app')
+import { setupRouterGuard } from './router/setupRouterGuard'
+import { preloadDynamicRoutes } from './router/setupDynamicRoutes'
+async function bootstrap () {
+  const app = createApp(App)
+  app.use(createPinia())
+  // 加载动态路由（确保 layout 子路由已注册）
+  await preloadDynamicRoutes(router)
+  // 注册路由守卫（如权限判断）
+  setupRouterGuard(router)
+  app.use(router)
+  app.use(ElementPlus)
+  app.mount('#app')
+}
+bootstrap()
