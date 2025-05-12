@@ -57,7 +57,7 @@ export default defineComponent({
           } else {
             // Render el-sub-menu
             return (
-              <el-sub-menu {...rest}>
+              <el-sub-menu {...rest} index={item.index || ''}>
                 {{
                   title: () => (
                     <>

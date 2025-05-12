@@ -5,7 +5,14 @@ const routes = [
     name: 'layout',
     component: Layout,
     redirect: '/home',
-    children: []
+    children: [
+      // ——— 通用重定向占位路由 ———
+      {
+        path: '/redirect/:pathMatch(.*)*',
+        // 直接渲染空组件
+        component: { render: () => null }
+      }
+    ]
   }
 
 ]

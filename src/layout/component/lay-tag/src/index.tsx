@@ -14,13 +14,24 @@ interface TagItem {
 export default defineComponent({
   name: 'LayTag',
   inheritAttrs: false,
-  setup () {
+  props: {
+    // 首页设置
+    homeSet: {
+      type: Object,
+      default: () => ({
+        title: '首页',
+        path: '/home'
+      })
+    }
+  },
+  setup (props) {
     const router = useRouter()
     const layTagStore = useLayTag()
 
     // ===== 基础数据 =====
     // 从store获取标签列表和当前活动标签
     const tags = computed(() => layTagStore.tags)
+    layTagStore.setTag(props.homeSet.path, props.homeSet.title)
     const activeTag = computed(() => layTagStore.activeTag)
 
     // ===== DOM引用 =====
@@ -109,6 +120,7 @@ export default defineComponent({
       if (currentTag) {
         // 清空所有标签后，重新添加当前标签
         layTagStore.clearAllTags()
+        layTagStore.setTag(props.homeSet.path, props.homeSet.title)
         layTagStore.setTag(currentTag.path, currentTag.title)
         layTagStore.setActiveTag(currentPath)
       }
@@ -121,6 +133,7 @@ export default defineComponent({
      */
     const closeAllTags = () => {
       layTagStore.clearAllTags()
+      layTagStore.setTag(props.homeSet.path, props.homeSet.title)
       // 跳转到首页
       router.push('/')
       ElMessage.success('已关闭所有标签')
@@ -142,6 +155,7 @@ export default defineComponent({
 
         // 重建标签列表
         layTagStore.clearAllTags()
+        layTagStore.setTag(props.homeSet.path, props.homeSet.title)
         keepTags.forEach((tag: TagItem) => {
           layTagStore.setTag(tag.path, tag.title)
         })
@@ -169,6 +183,7 @@ export default defineComponent({
 
         // 重建标签列表
         layTagStore.clearAllTags()
+        layTagStore.setTag(props.homeSet.path, props.homeSet.title)
         keepTags.forEach((tag: TagItem) => {
           layTagStore.setTag(tag.path, tag.title)
         })
@@ -189,7 +204,7 @@ export default defineComponent({
      */
     const handleContextMenu = (e: MouseEvent, tag: TagItem) => {
       e.preventDefault() // 阻止默认右键菜单
-
+      // eslint-disable-next-line no-debugger
       // 记录右键点击的标签和位置
       rightClickedTag.value = tag
       contextMenuX.value = e.clientX
@@ -199,10 +214,21 @@ export default defineComponent({
       contextMenuVisible.value = true
     }
 
+    const refreshPage = () => {
+      // eslint-disable-next-line no-debugger
+      // 拿到当前 fullPath，例如 '/ganttastic/index?x=1#foo'
+      const { fullPath } = router.currentRoute.value
+      // 用 replace 也行，用 push 会在历史里留一条 /redirect 记录
+      router
+        .replace({ path: `/redirect${fullPath}` })
+        .catch(() => {})
+    }
+
     /**
      * 处理底部下拉菜单命令
      * @param command 菜单命令
      */
+
     const handleDropdownCommand = (command: string) => {
       // 对当前活动标签执行操作
       const currentPath = activeTag.value
@@ -223,7 +249,8 @@ export default defineComponent({
           closeRightTags(currentPath)
           break
         case 'refresh':
-          router.go(0) // 刷新当前页面
+          // router.go(0) // 刷新当前页面
+          refreshPage()
           break
       }
     }
@@ -255,7 +282,8 @@ export default defineComponent({
           closeAllTags()
           break
         case 'refresh':
-          router.go(0) // 刷新当前页面
+          // router.go(0) // 刷新当前页面
+          refreshPage()
           break
       }
 
@@ -348,6 +376,18 @@ export default defineComponent({
 
     // ===== 生命周期钩子 =====
 
+    const isHomeSet = computed(() => {
+      return rightClickedTag.value?.path === props.homeSet.path
+    })
+
+    const isHideCloseLeftAndOthers = computed(() => {
+      return rightClickedTag.value?.path === (tags.value.length > 1 ? tags.value[1].path : '')
+    })
+
+    const isHideCloseRight = computed(() => {
+      return rightClickedTag.value?.path === (tags.value.length > 1 ? tags.value[tags.value.length - 1].path : '')
+    })
+
     onMounted(() => {
       // 初始化滚动事件监听
       if (scrollContainer.value) {
@@ -381,11 +421,11 @@ export default defineComponent({
 
     // 下拉菜单选项
     const dropdownItems = [
+      { command: 'refresh', text: '重新加载' },
       { command: 'closeOthers', text: '关闭其他标签' },
       { command: 'closeAll', text: '关闭所有标签' },
       { command: 'closeLeft', text: '关闭左侧标签' },
-      { command: 'closeRight', text: '关闭右侧标签' },
-      { command: 'refresh', text: '刷新当前页面' }
+      { command: 'closeRight', text: '关闭右侧标签' }
     ]
 
     // 渲染组件
@@ -419,7 +459,7 @@ export default defineComponent({
                   onClick={() => handleTagClick(tag.path)}
                   onContextmenu={(e) => handleContextMenu(e, tag)}
                 >
-                  <el-tag closable onClose={(e: MouseEvent) => handleTagClose(e, tag.path)}>
+                  <el-tag closable={tag.path !== props.homeSet.path} onClose={(e: MouseEvent) => handleTagClose(e, tag.path)}>
                     {tag.title}
                   </el-tag>
                 </span>
@@ -467,12 +507,14 @@ export default defineComponent({
             onClick={(e) => e.stopPropagation()}
           >
             <ul>
-              <li onClick={() => handleContextMenuClick('closeTag')}>关闭当前标签</li>
-              <li onClick={() => handleContextMenuClick('closeOthers')}>关闭其他标签</li>
-              <li onClick={() => handleContextMenuClick('closeLeft')}>关闭左侧标签</li>
-              <li onClick={() => handleContextMenuClick('closeRight')}>关闭右侧标签</li>
-              <li onClick={() => handleContextMenuClick('closeAll')}>关闭所有标签</li>
-              <li onClick={() => handleContextMenuClick('refresh')}>刷新当前页面</li>
+              <li onClick={() => handleContextMenuClick('refresh')} v-show={rightClickedTag.value.path === layTagStore.activeTag || rightClickedTag.value.path === props.homeSet.path}>重新加载</li>
+              <div v-show={!isHomeSet.value}>
+                <li onClick={() => handleContextMenuClick('closeTag')}>关闭当前标签</li>
+                <li onClick={() => handleContextMenuClick('closeOthers')} v-show={!isHideCloseLeftAndOthers.value}>关闭其他标签</li>
+                <li onClick={() => handleContextMenuClick('closeLeft')} v-show={!isHideCloseLeftAndOthers.value}>关闭左侧标签</li>
+                <li onClick={() => handleContextMenuClick('closeRight')} v-show={!isHideCloseRight.value}>关闭右侧标签</li>
+                <li onClick={() => handleContextMenuClick('closeAll')}>关闭所有标签</li>
+              </div>
             </ul>
           </div>
         )}

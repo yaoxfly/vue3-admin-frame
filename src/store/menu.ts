@@ -3,37 +3,63 @@ import { ref, computed, markRaw } from 'vue'
 import { Location } from '@element-plus/icons-vue'
 
 // 菜单项类型定义
-export interface MenuItem {
-  index: string
-  title?: string
-  icon?: string | any
-  disabled?: boolean
-  children?: MenuItem[]
-  groupTitle?: string
-}
+export type MenuItem =
+  // 分组项（可以没有 index，有 groupTitle）
+  | {
+      groupTitle: string
+      index?: string
+      title?: string
+      icon?: string | Component
+      disabled?: boolean
+      children?: MenuItem[]
+    }
+
+  // 非分组项：非叶子节点（有 children，index 可选）
+  | {
+      groupTitle?: undefined
+      index?: string
+      children: MenuItem[]
+      title?: string
+      icon?: string | Component
+      disabled?: boolean
+    }
+
+  // 非分组项：叶子节点（无 children，index 必填）
+  | {
+      groupTitle?: undefined
+      index: string
+      children?: undefined
+      title?: string
+      icon?: string | Component
+      disabled?: boolean
+
+    }
 
 export const useMenuStore = defineStore('menu', () => {
   const initialMenu: MenuItem[] = [
     {
-      index: '/',
       title: '范例',
       icon: markRaw(Location),
       children: [
         {
-          index: '/group1',
           groupTitle: '分组1',
           children: [
             { index: '/test', title: '演示' }
           ]
         },
         {
-          index: '/group2',
           groupTitle: '分组2',
           children: [
             { index: '/home', title: '首页' }
           ]
         }
       ]
+    },
+
+    {
+      index: '/tag-test',
+      title: '标签测试',
+      icon: markRaw(Location)
     }
   ]
 

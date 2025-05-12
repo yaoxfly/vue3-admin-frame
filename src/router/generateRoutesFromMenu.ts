@@ -20,12 +20,12 @@ export const generateRoutesFromMenu = (
       // 如果当前节点不是 group（即没有 groupTitle），才加入 breadcrumb
       const currentBreadcrumb = item.groupTitle
         ? [...parentBreadcrumb]
-        : [...parentBreadcrumb, { title: item.title || '', path: fullPath }]
+        : [...parentBreadcrumb, { title: item.title || '', path: fullPath || '' }]
 
       if (allPaths.includes(viewPath)) {
         const route: RouteRecordRaw = {
-          path: fullPath,
-          name: fullPath.replace(/^\//, ''),
+          path: fullPath || '',
+          name: fullPath?.replace(/^\//, ''),
           component: modules[viewPath],
           meta: {
             title: item.title,
