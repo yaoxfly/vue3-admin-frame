@@ -1,7 +1,7 @@
 @use '../../../../assets/style/base.scss' as *;
 $top-and-bottom-blocks-height: 40px;
 $height: 100vh;
-$width: 210px;
+
 
 .lay-menu {
   position: relative;
@@ -13,7 +13,7 @@ $width: 210px;
  */
 
 .menu-title {
-  width: $width;
+  width: $menu-width;
   height: $top-and-bottom-blocks-height;
   border-right: 1px solid $border;
   display: flex;
@@ -49,7 +49,7 @@ $width: 210px;
 
 .el-menu-vertical {
   height: calc($height - #{2 * $top-and-bottom-blocks-height });
-  width: $width;
+  width: $menu-width;
   overflow: hidden;
   overflow-y: auto;
 
@@ -87,7 +87,7 @@ $width: 210px;
  * 侧边栏收缩图标
  */
 .collapse-icon {
-  width: $width;
+  width: $menu-width;
   height: $top-and-bottom-blocks-height;
   border-top: 1px solid $border;
   border-right: 1px solid $border;

@@ -3,7 +3,7 @@
 /* 最外层容器 - 确保不影响页面布局 */
 .lay-tag-wrapper {
   width: 100%;
-  max-width: calc(100vw - 210px);
+  max-width: calc(100vw - $menu-width);
   overflow: hidden;
   position: relative;
   box-sizing: border-box;
