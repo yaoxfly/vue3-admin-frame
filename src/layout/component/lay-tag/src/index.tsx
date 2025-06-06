@@ -22,6 +22,10 @@ export default defineComponent({
         title: '首页',
         path: '/home'
       })
+    },
+    fill: {
+      type: Boolean,
+      default: false
     }
   },
   setup (props) {
@@ -30,9 +34,10 @@ export default defineComponent({
 
     // ===== 基础数据 =====
     // 从store获取标签列表和当前活动标签
-    const tags = computed(() => layTagStore.tags)
-    layTagStore.setTag(props.homeSet.path, props.homeSet.title)
-    const activeTag = computed(() => layTagStore.activeTag)
+    const tags = computed(() => layTagStore.getTags)
+    // 只添加首页标签，但不设置为活动标签
+    layTagStore.addTagToStart(props.homeSet.path, props.homeSet.title)
+    const activeTag = computed(() => layTagStore.getActiveTag)
 
     // ===== DOM引用 =====
     const scrollContainer = ref<HTMLElement | null>(null) // 标签滚动容器
@@ -224,18 +229,26 @@ export default defineComponent({
         .catch(() => {})
     }
 
+    const fullScreen = () => {
+      layTagStore.setFill(!layTagStore.getFill)
+    }
+
     /**
      * 处理底部下拉菜单命令
      * @param command 菜单命令
      */
 
     const handleDropdownCommand = (command: string) => {
+      console.log(command, 'command')
       // 对当前活动标签执行操作
       const currentPath = activeTag.value
       if (!currentPath) return
 
       // 根据命令执行相应操作
       switch (command) {
+        case 'closeTag':
+          handleTagClose(new MouseEvent('click'), currentPath)
+          break
         case 'closeOthers':
           closeOtherTags(currentPath)
           break
@@ -251,6 +264,9 @@ export default defineComponent({
         case 'refresh':
           // router.go(0) // 刷新当前页面
           refreshPage()
+          break
+        case 'fullScreen':
+          fullScreen()
           break
       }
     }
@@ -284,6 +300,9 @@ export default defineComponent({
         case 'refresh':
           // router.go(0) // 刷新当前页面
           refreshPage()
+          break
+        case 'fullScreen':
+          fullScreen()
           break
       }
 
@@ -380,12 +399,28 @@ export default defineComponent({
       return rightClickedTag.value?.path === props.homeSet.path
     })
 
-    const isHideCloseLeftAndOthers = computed(() => {
-      return rightClickedTag.value?.path === (tags.value.length > 1 ? tags.value[1].path : '')
+    const isHideCloseLeft = computed(() => {
+      const path = rightClickedTag.value?.path
+      return path === (tags.value.length > 1 ? tags.value[1].path : '')
+    })
+
+    const isHideCloseOthers = computed(() => {
+      // 如果总标签数小于等于1，隐藏
+      if (tags.value.length <= 1) return true
+
+      // 如果当前右键的是首页，隐藏（首页本身不能关闭，关闭其他没意义）
+      if (rightClickedTag.value?.path === props.homeSet.path) return true
+
+      // 如果除了首页外只有当前标签，也隐藏（因为首页不能关闭，没有其他可关闭的标签）
+      const otherCloseableTags = (tags.value as TagItem[]).filter(tag =>
+        tag.path !== props.homeSet.path && tag.path !== rightClickedTag.value?.path
+      )
+      return otherCloseableTags.length === 0
     })
 
     const isHideCloseRight = computed(() => {
-      return rightClickedTag.value?.path === (tags.value.length > 1 ? tags.value[tags.value.length - 1].path : '')
+      const path = rightClickedTag.value?.path
+      return path === (tags.value.length > 1 ? tags.value[tags.value.length - 1].path : '')
     })
 
     onMounted(() => {
@@ -403,7 +438,12 @@ export default defineComponent({
       const currentPath = router.currentRoute.value.path
       const currentRoute = router.currentRoute.value
       const title = currentRoute.meta?.title as string || currentRoute.name?.toString() || '未命名页面'
+
+      // 添加当前路由标签并设置为活动标签
       layTagStore.setTag(currentPath, title)
+
+      // 确保当前路由是活动的
+      layTagStore.setActiveTag(currentPath)
 
       // 添加全局点击事件用于隐藏右键菜单
       document.addEventListener('click', hideContextMenu)
@@ -420,17 +460,44 @@ export default defineComponent({
     })
 
     // 下拉菜单选项
-    const dropdownItems = [
-      { command: 'refresh', text: '重新加载' },
-      { command: 'closeOthers', text: '关闭其他标签' },
-      { command: 'closeAll', text: '关闭所有标签' },
-      { command: 'closeLeft', text: '关闭左侧标签' },
-      { command: 'closeRight', text: '关闭右侧标签' }
-    ]
+    const dropdownItems = ref<{ command: string, text: string, disabled: boolean }[]>([])
+    const handleOpen = () => {
+      const isHideCloseLeft = activeTag.value === (tags.value.length > 1 ? tags.value[1].path : '')
+      const isHideCloseRight = activeTag.value === (tags.value.length > 1 ? tags.value[tags.value.length - 1].path : '')
+      const isHomeSet = activeTag.value === props.homeSet.path
+
+      // 计算关闭其他标签的禁用状态（与右键菜单逻辑一致）
+      const isHideCloseOthersForDropdown = (() => {
+        // 如果总标签数小于等于1，禁用
+        if (tags.value.length <= 1) return true
+
+        // 如果当前活动标签是首页，禁用（首页本身不能关闭，关闭其他没意义）
+        if (activeTag.value === props.homeSet.path) return true
+
+        // 如果除了首页外只有当前标签，也禁用（因为首页不能关闭，没有其他可关闭的标签）
+        const otherCloseableTags = (tags.value as TagItem[]).filter(tag =>
+          tag.path !== props.homeSet.path && tag.path !== activeTag.value
+        )
+        return otherCloseableTags.length === 0
+      })()
+
+      dropdownItems.value = [
+        { command: 'refresh', text: '重新加载', disabled: false },
+        { command: 'closeTag', text: '关闭当前标签', disabled: isHomeSet },
+        { command: 'closeLeft', text: '关闭左侧标签', disabled: isHideCloseLeft || isHomeSet },
+        { command: 'closeRight', text: '关闭右侧标签', disabled: isHideCloseRight },
+        { command: 'closeOthers', text: '关闭其他标签', disabled: isHideCloseOthersForDropdown },
+        { command: 'closeAll', text: '关闭全部标签', disabled: false },
+        { command: 'fullScreen', text: '内容区全屏', disabled: false }
+      ]
+      console.log(dropdownItems.value, 'dropdownItems')
+    }
 
     // 渲染组件
     return () => (
-      <div class={styles['lay-tag-wrapper']} onClick={hideContextMenu}>
+      <div class={styles['lay-tag-wrapper']} onClick={hideContextMenu} style={
+          props.fill ? { maxWidth: '100vw' } : {}
+        }>
         {/* 标签容器 */}
         <div
           ref={containerWrapper}
@@ -480,12 +547,12 @@ export default defineComponent({
 
         {/* 底部下拉菜单 */}
         <div class={styles['lay-tag-drop-down-menu']}>
-          <el-dropdown trigger="click">
+          <el-dropdown trigger="click" onVisibleChange={handleOpen}>
             {{
               dropdown: () => (
                 <el-dropdown-menu>
-                  {dropdownItems.map((item, index) => (
-                    <el-dropdown-item key={index} onClick={() => handleDropdownCommand(item.command)}>
+                  {dropdownItems.value.map((item, index) => (
+                    <el-dropdown-item key={index} onClick={() => handleDropdownCommand(item.command)} disabled={item.disabled}>
                       {item.text}
                     </el-dropdown-item>
                   ))}
@@ -507,14 +574,15 @@ export default defineComponent({
             onClick={(e) => e.stopPropagation()}
           >
             <ul>
-              <li onClick={() => handleContextMenuClick('refresh')} v-show={rightClickedTag.value.path === layTagStore.activeTag || rightClickedTag.value.path === props.homeSet.path}>重新加载</li>
+              <li onClick={() => handleContextMenuClick('refresh')} v-show={rightClickedTag.value.path === activeTag.value || rightClickedTag.value.path === props.homeSet.path}>重新加载</li>
               <div v-show={!isHomeSet.value}>
                 <li onClick={() => handleContextMenuClick('closeTag')}>关闭当前标签</li>
-                <li onClick={() => handleContextMenuClick('closeOthers')} v-show={!isHideCloseLeftAndOthers.value}>关闭其他标签</li>
-                <li onClick={() => handleContextMenuClick('closeLeft')} v-show={!isHideCloseLeftAndOthers.value}>关闭左侧标签</li>
+                <li onClick={() => handleContextMenuClick('closeLeft')} v-show={!isHideCloseLeft.value}>关闭左侧标签</li>
                 <li onClick={() => handleContextMenuClick('closeRight')} v-show={!isHideCloseRight.value}>关闭右侧标签</li>
-                <li onClick={() => handleContextMenuClick('closeAll')}>关闭所有标签</li>
+                <li onClick={() => handleContextMenuClick('closeOthers')} v-show={!isHideCloseOthers.value}>关闭其他标签</li>
+                <li onClick={() => handleContextMenuClick('closeAll')}>关闭全部标签</li>
               </div>
+              <li onClick={() => handleContextMenuClick('fullScreen')}>{layTagStore.getFill ? '内容区退出全屏' : '内容区全屏'} </li>
             </ul>
           </div>
         )}
