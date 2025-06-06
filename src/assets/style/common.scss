@@ -5,7 +5,7 @@
 
   /* 主题 */
   --color-primary-base: 92, 106, 196;
-  --color-primary: rgba(var(--color-primary-base));
+  --color-primary: rgba(var(--color-primary-base), 1);
   --color-primary-10: rgba(var(--color-primary-base), 0.1);
   --color-primary-20: rgba(var(--color-primary-base), 0.2);
   --color-primary-30: rgba(var(--color-primary-base), 0.3);

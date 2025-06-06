@@ -7,6 +7,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
 import { setupRouterGuard } from './router/setupRouterGuard'
 import { preloadDynamicRoutes } from './router/setupDynamicRoutes'
+
 async function bootstrap () {
   const app = createApp(App)
   app.use(createPinia())

@@ -20,7 +20,9 @@ export default defineComponent({
         <div class={styles['layout-right']}>
           {!fill.value && <LayHeaderBar></LayHeaderBar>}
           <LayTag fill={fill.value}></LayTag>
-          <router-view />
+          <div class={styles['router-view-container']}>
+            <router-view />
+          </div>
         </div>
       </div>
     )

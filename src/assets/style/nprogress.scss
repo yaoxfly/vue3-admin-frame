@@ -1,0 +1,60 @@
+/* 自定义 NProgress 样式 */
+
+/* 进度条本体 */
+#nprogress .bar {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-success), var(--color-warning), var(--color-danger)) !important;
+  height: 3px !important;
+  box-shadow: 0 0 10px var(--color-primary-40);
+  border-radius: 0 2px 2px 0;
+}
+
+/* 进度条发光效果 */
+#nprogress .peg {
+  display: block;
+  position: absolute;
+  right: 0px;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 10px var(--color-primary), 0 0 5px var(--color-primary);
+  opacity: 1.0;
+  transform: rotate(3deg) translate(0px, -4px);
+}
+
+/* 加载圆圈 */
+#nprogress .spinner {
+  display: block;
+  position: fixed;
+  z-index: 1031;
+  top: 20px;
+  right: 20px;
+}
+
+#nprogress .spinner-icon {
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: solid 2px transparent;
+  border-top-color: var(--color-primary);
+  border-left-color: var(--color-primary);
+  border-radius: 50%;
+  animation: nprogress-spinner 400ms linear infinite;
+}
+
+.nprogress-custom {
+  pointer-events: none;
+}
+
+@keyframes nprogress-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 移除默认的 spinner，因为我们在配置中已经禁用了 */
+#nprogress .spinner {
+  display: none !important;
+}

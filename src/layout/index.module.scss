@@ -17,3 +17,43 @@
     flex-direction: column;
   }
 }
+
+// 路由视图容器
+.router-view-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  // 微调后的左右切换动画
+  :global(> *) {
+    animation: smoothSlide 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+}
+
+// 快速消失，慢慢出现的切换动画
+@keyframes smoothSlide {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  // 消失阶段 - 极快消失
+  10% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+
+  // 从左侧出现 - 稍作停顿
+  30% {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
