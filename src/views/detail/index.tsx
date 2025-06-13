@@ -1,31 +1,37 @@
 import Container from '@/component/container/src/index'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { usePageCache } from '@/hooks/use-page-cache'
 
 export default defineComponent({
-  name: 'TagTest',
+  name: 'Detail',
   setup () {
+    const route = useRoute()
     const router = useRouter()
-    const inputValue = ref('测试输入保持')
+    const id = computed(() => route.params.id || route.query.id || '1')
+    const inputValue = ref(`详情页输入 - ID: ${id.value}`)
 
     // 使用页面缓存hook
-    const { pushWithoutCache } = usePageCache('TagTest')
+    const { pushWithoutCache } = usePageCache('Detail')
 
-    const goToDetail = () => {
-      router.push('/detail?id=123')
+    const goBack = () => {
+      router.back()
     }
 
-    const goToDetailWithoutCache = () => {
-      pushWithoutCache('/detail?id=456')
+    const goToTagTest = () => {
+      router.push('/tag-test')
     }
 
-    return () => <>
-      <Container >
-         <div>
-          <h1>标签测试</h1>
-          <p>测试缓存功能</p>
+    const goToTagTestWithoutCache = () => {
+      pushWithoutCache('/tag-test')
+    }
+
+    return () => (
+      <Container>
+        <div>
+          <h1>详情页面</h1>
+          <p>ID: {id.value}</p>
           <p style="color: #666; font-size: 14px;">
-            输入内容后跳转到详情页，然后返回查看缓存效果
+            输入内容后跳转，再返回测试缓存效果
           </p>
 
           <div style="margin: 20px 0;">
@@ -39,20 +45,26 @@ export default defineComponent({
 
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button
-              onClick={goToDetail}
+              onClick={goBack}
               style="padding: 8px 16px; background: #409eff; color: white; border: none; border-radius: 4px; cursor: pointer;"
             >
-              跳转到详情页
+              返回上一页
             </button>
             <button
-              onClick={goToDetailWithoutCache}
+              onClick={goToTagTest}
+              style="padding: 8px 16px; background: #67c23a; color: white; border: none; border-radius: 4px; cursor: pointer;"
+            >
+              跳转到标签测试
+            </button>
+            <button
+              onClick={goToTagTestWithoutCache}
               style="padding: 8px 16px; background: #e6a23c; color: white; border: none; border-radius: 4px; cursor: pointer;"
             >
               强制刷新跳转
             </button>
           </div>
-         </div>
-        </Container>
-    </>
+        </div>
+      </Container>
+    )
   }
 })

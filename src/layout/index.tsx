@@ -3,12 +3,13 @@ import LayHeaderBar from './component/lay-header-bar/src'
 import localIcon from '@/assets/logo.png'
 import styles from './index.module.scss'
 import LayTag from './component/lay-tag/src'
-import { useMenuStore, useLayTag } from '@/store'
-
+import { useMenuStore, useLayTag, useKeepAliveStore } from '@/store'
+import { KeepAlive } from 'vue'
 export default defineComponent({
   name: 'Layout',
   setup () {
     // 从 store 中获取菜单数据
+    const keepAliveStore = useKeepAliveStore()
     const menuStore = useMenuStore()
     const menu = menuStore.getMenu
     const layTagStore = useLayTag()
@@ -21,7 +22,13 @@ export default defineComponent({
           {!fill.value && <LayHeaderBar></LayHeaderBar>}
           <LayTag fill={fill.value}></LayTag>
           <div class={styles['router-view-container']}>
-            <router-view />
+            <router-view>
+              {({ Component }: { Component: any }) => (
+                <KeepAlive include={keepAliveStore.getCachedComponents}>
+                  <Component />
+                </KeepAlive>
+              )}
+            </router-view>
           </div>
         </div>
       </div>

@@ -2,6 +2,19 @@ import type { RouteRecordRaw } from 'vue-router'
 import type { MenuItem } from '@/store/menu'
 // 动态导入 tsx 页面组件
 const modules = import.meta.glob('@/views/**/index.tsx')
+
+/**
+ * 将路径转换为 PascalCase 格式
+ * 例如: '/tag-test' -> 'TagTest', '/home' -> 'Home'
+ */
+const toPascalCase = (path: string): string => {
+  return path
+    .replace(/^\//, '') // 去掉开头的斜杠
+    .split('-') // 按短横线分割
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // 每个单词首字母大写
+    .join('') // 连接
+}
+
 /**
  * 从菜单中提取所有合法可用的动态路由
  */
@@ -25,7 +38,7 @@ export const generateRoutesFromMenu = (
       if (allPaths.includes(viewPath)) {
         const route: RouteRecordRaw = {
           path: fullPath || '',
-          name: fullPath?.replace(/^\//, ''),
+          name: toPascalCase(fullPath || ''),
           component: modules[viewPath],
           meta: {
             title: item.title,
