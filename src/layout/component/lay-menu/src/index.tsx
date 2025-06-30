@@ -19,10 +19,8 @@ export default defineComponent({
       default: ''
     }
   },
-  setup (props, { attrs, slots }) {
+  setup (props, { attrs }) {
     const router = useRouter()
-    const route = useRoute()
-    const layTagStore = useLayTag()
     const isCollapse = ref(false)
 
     const renderIcon = (icon: any) => {
@@ -33,11 +31,9 @@ export default defineComponent({
       }
     }
 
-    const routerPush = (path: string, title: string) => {
-      router.push({ path }).then(() => {
-        // 路由跳转成功后，将路由信息保存到lay-tag中
-        layTagStore.setTag(path, title)
-      })
+    const routerPush = (path: string) => {
+      router.push({ path })
+      // 标签添加逻辑已移至路由守卫中统一处理，这里不再重复添加
     }
 
     const renderMenu = (items: MenuItem[]) => {
@@ -73,7 +69,7 @@ export default defineComponent({
         } else {
           // Render el-menu-item
           return (
-            <el-menu-item {...rest} onClick={() => routerPush(rest.index as string, item.title || '未命名')}>
+            <el-menu-item {...rest} onClick={() => routerPush(rest.index as string)}>
               {icon && renderIcon(icon)}
               <span>{item.title}</span>
             </el-menu-item>

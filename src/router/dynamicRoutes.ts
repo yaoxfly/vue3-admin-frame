@@ -1,13 +1,19 @@
+/**
+ * @description 注册动态路由
+ */
 import type { Router } from 'vue-router'
 import { useMenuStore } from '@/store/menu'
 import { generateRoutesFromMenu } from './generateRoutesFromMenu'
-export const preloadDynamicRoutes = async (router: Router) => {
+import { generateNonMenuRoutes } from './generateNonMenuRoutes'
+export const dynamicRoutes = async (router: Router) => {
   const menuStore = useMenuStore()
-  const routes = generateRoutesFromMenu(menuStore.getMenu)
+  let routes = generateRoutesFromMenu(menuStore.getMenu)
+  const nonMenuRoutes = generateNonMenuRoutes()
+  routes = [...routes, ...nonMenuRoutes]
+  console.log(nonMenuRoutes, 'generateNonMenuRoutes')
   routes.forEach(route => {
     router.addRoute('layout', route)
   })
-
   // 添加 layout 下的兜底 404
   router.addRoute('layout', {
     path: ':pathMatch(.*)*',
@@ -20,7 +26,6 @@ export const preloadDynamicRoutes = async (router: Router) => {
       ]
     }
   })
-
   // 全局兜底 404
   router.addRoute({
     path: '/:pathMatch(.*)*',
@@ -33,6 +38,5 @@ export const preloadDynamicRoutes = async (router: Router) => {
       ]
     }
   })
-
   menuStore.isLoaded = true
 }

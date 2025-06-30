@@ -5,16 +5,16 @@ import { createPinia } from 'pinia'
 import '@/assets/style/index.scss'
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
-import { setupRouterGuard } from './router/setupRouterGuard'
-import { preloadDynamicRoutes } from './router/setupDynamicRoutes'
+import { routerGuard } from './router/routerGuard'
+import { dynamicRoutes } from './router/dynamicRoutes'
 
 async function bootstrap () {
   const app = createApp(App)
   app.use(createPinia())
   // 加载动态路由（确保 layout 子路由已注册）
-  await preloadDynamicRoutes(router)
+  await dynamicRoutes(router)
   // 注册路由守卫（如权限判断）
-  setupRouterGuard(router)
+  routerGuard(router)
   app.use(router)
   app.use(ElementPlus)
   app.mount('#app')

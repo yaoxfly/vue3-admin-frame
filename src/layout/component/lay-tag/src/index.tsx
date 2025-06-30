@@ -434,15 +434,8 @@ export default defineComponent({
         window.addEventListener('resize', updateArrowsVisibility)
       }
 
-      // 初始化当前路由标签
+      // 确保当前路由是活动的（标签添加逻辑已移至路由守卫中统一处理）
       const currentPath = router.currentRoute.value.path
-      const currentRoute = router.currentRoute.value
-      const title = currentRoute.meta?.title as string || currentRoute.name?.toString() || '未命名页面'
-
-      // 添加当前路由标签并设置为活动标签
-      layTagStore.setTag(currentPath, title)
-
-      // 确保当前路由是活动的
       layTagStore.setActiveTag(currentPath)
 
       // 添加全局点击事件用于隐藏右键菜单

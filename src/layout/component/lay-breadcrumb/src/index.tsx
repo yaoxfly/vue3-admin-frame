@@ -11,10 +11,21 @@ export default defineComponent({
       const { meta } = routes.currentRoute.value
       return (meta?.breadcrumb ?? []) as Breadcrumb[]
     })
+
     return () => (
       <>
         <el-breadcrumb {...attrs} >
-          {breadcrumb.value.map((item) => <el-breadcrumb-item key={item.path} to={{ path: item.path }}>{item.title}</el-breadcrumb-item>)}
+          {breadcrumb.value.map((item, idx) => {
+            const isLast = idx === breadcrumb.value.length - 1
+            return (
+              <el-breadcrumb-item
+                key={item.path || idx}
+                {...(!isLast && item.path ? { to: { path: item.path } } : {})}
+              >
+                {item.title}
+              </el-breadcrumb-item>
+            )
+          })}
         </el-breadcrumb>
       </>
     )

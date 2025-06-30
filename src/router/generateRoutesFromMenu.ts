@@ -1,3 +1,6 @@
+/**
+ * @description 从菜单中提取所有合法可用的动态路由
+ */
 import type { RouteRecordRaw } from 'vue-router'
 import type { MenuItem } from '@/store/menu'
 // 动态导入 tsx 页面组件
