@@ -3,7 +3,7 @@
 /* 最外层容器 - 确保不影响页面布局 */
 .lay-tag-wrapper {
   width: 100%;
-  max-width: calc(100vw - $menu-width);
+  max-width: calc(100vw - $menu-width); //会影响滚动,所以要固定宽度
   overflow: hidden;
   position: relative;
   box-sizing: border-box;
@@ -88,6 +88,7 @@
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
+    width: 100%;
     height: 100%;
     scrollbar-width: none;
     /* Firefox */

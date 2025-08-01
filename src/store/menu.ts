@@ -36,6 +36,9 @@ export type MenuItem =
     }
 
 export const useMenuStore = defineStore('menu', () => {
+  /** 菜单数据操作 */
+
+  // 初始菜单数据--测试用，可以在这里请求接口
   const initialMenu: MenuItem[] = [
     {
       title: '范例',
@@ -64,7 +67,6 @@ export const useMenuStore = defineStore('menu', () => {
   ]
 
   const menu = ref<MenuItem[]>(initialMenu)
-  const isLoaded = ref(false)
 
   const getMenu = computed(() => menu.value)
 
@@ -72,9 +74,22 @@ export const useMenuStore = defineStore('menu', () => {
     menu.value = newMenu
   }
 
+  /** 收缩按钮 */
+
+  const isCollapse = ref(false)
+
+  const getIsCollapse = computed(() => {
+    return isCollapse.value
+  })
+
+  const setIsCollapse = (val: boolean) => {
+    isCollapse.value = val
+  }
+
   return {
     getMenu,
     setMenu,
-    isLoaded
+    getIsCollapse,
+    setIsCollapse
   }
 })

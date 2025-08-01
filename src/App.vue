@@ -10,7 +10,8 @@
 </template>
 
 <style>
-.post-css-px-to-viewport-test {
-  padding-bottom: 2px;
+body,
+html {
+  overflow: hidden;
 }
 </style>

@@ -1,7 +1,7 @@
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { ArrowLeft, ArrowRight, ArrowDown } from '@element-plus/icons-vue'
 import styles from '../style/index.module.scss'
-import { useLayTag } from '@/store'
+import { useLayTag, useMenuStore } from '@/store'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
@@ -31,12 +31,20 @@ export default defineComponent({
   setup (props) {
     const router = useRouter()
     const layTagStore = useLayTag()
+    const menuStore = useMenuStore() // getIsCollapse 不可解构,不会响应式
 
     // ===== 基础数据 =====
     // 从store获取标签列表和当前活动标签
     const tags = computed(() => layTagStore.getTags)
     // 只添加首页标签，但不设置为活动标签
     layTagStore.addTagToStart(props.homeSet.path, props.homeSet.title)
+
+    /** 滚动测试 -start */
+    // for (let i = 0; i < 30; i++) {
+    //   layTagStore.addTagToStart(props.homeSet.path + i, props.homeSet.title + i)
+    // }
+    /** 滚动测试 -end */
+
     const activeTag = computed(() => layTagStore.getActiveTag)
 
     // ===== DOM引用 =====
@@ -489,9 +497,13 @@ export default defineComponent({
     // 渲染组件
     return () => (
       <div class={styles['lay-tag-wrapper']} onClick={hideContextMenu} style={
-          props.fill ? { maxWidth: '100vw' } : {}
+          props.fill
+            ? { maxWidth: '100vw' } // props.fill为true时应用100vh
+            : menuStore.getIsCollapse
+              ? { maxWidth: 'calc(100vw - 64px)' } // 折叠状态时应用calc计算值
+              : { } // 都不满足时不设置样式
         }>
-        {/* 标签容器 */}
+        {/* 标签容器 */ }
         <div
           ref={containerWrapper}
           class={styles['lay-tag-container']}

@@ -1,9 +1,9 @@
-import { defineComponent, ref, h, PropType } from 'vue'
+import { defineComponent, h, PropType } from 'vue'
 import styles from '../style/index.module.scss'
 import { Expand, Fold } from '@element-plus/icons-vue'
 import { MenuItem } from './types'
-import { useRouter, useRoute } from 'vue-router'
-import { useLayTag } from '@/store/lay-tag'
+import { useRouter } from 'vue-router'
+import { useMenuStore } from '@/store'
 
 export default defineComponent({
   name: 'LayMenu',
@@ -21,7 +21,7 @@ export default defineComponent({
   },
   setup (props, { attrs }) {
     const router = useRouter()
-    const isCollapse = ref(false)
+    const menuStore = useMenuStore()
 
     const renderIcon = (icon: any) => {
       if (typeof icon === 'string') {
@@ -78,22 +78,26 @@ export default defineComponent({
       })
     }
 
+    const collapseIconClick = () => {
+      menuStore.setIsCollapse(!menuStore.getIsCollapse)
+    }
+
     return () => (
       <div class={styles['lay-menu']}>
-        <div class={[styles['menu-title'], { 'el-menu--collapse': isCollapse.value }]}>
+        <div class={[styles['menu-title'], { 'el-menu--collapse': menuStore.getIsCollapse }]}>
           <img src={props.logo} class={styles.logo}></img>
-          <span class={styles['system-name'] } style={{ opacity: isCollapse.value ? 0 : 1 }} >Vue3AdminFrame</span>
+          <span class={styles['system-name'] } style={{ opacity: menuStore.getIsCollapse ? 0 : 1 }} >Vue3AdminFrame</span>
         </div>
         <el-menu
           {...attrs}
           class={styles['el-menu-vertical']}
-          collapse={isCollapse.value}
+          collapse={menuStore.getIsCollapse}
         >
           {renderMenu(props.data)}
         </el-menu>
-        <div class={[styles['collapse-icon'], { 'el-menu--collapse': isCollapse.value }]} onClick={() => { isCollapse.value = !isCollapse.value }}>
-          <el-tooltip content={isCollapse.value ? '点击展开' : '点击折叠'} placement="right" effect="light">
-            <el-icon>{isCollapse.value ? <Expand /> : <Fold />}</el-icon>
+        <div class={[styles['collapse-icon'], { 'el-menu--collapse': menuStore.getIsCollapse }]} onClick={() => collapseIconClick()}>
+          <el-tooltip content={menuStore.getIsCollapse ? '点击展开' : '点击折叠'} placement="right" effect="light">
+            <el-icon>{menuStore.getIsCollapse ? <Expand /> : <Fold />}</el-icon>
           </el-tooltip>
         </div>
       </div>
