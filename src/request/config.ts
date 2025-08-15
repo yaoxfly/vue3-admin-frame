@@ -1,4 +1,4 @@
-import createHttpClient from './index'
+import createHttpClient from './lib/index'
 export const { request } = createHttpClient({
   // 请求配置
   config: {

@@ -2,7 +2,7 @@
  * @description 注册动态路由
  */
 import type { Router } from 'vue-router'
-import { useMenuStore } from '@/store/menu'
+import { useMenuStore } from '@/store'
 import { generateRoutesFromMenu } from './generateRoutesFromMenu'
 import { generateNonMenuRoutes } from './generateNonMenuRoutes'
 export const dynamicRoutes = async (router: Router) => {

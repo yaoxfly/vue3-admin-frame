@@ -1,6 +1,6 @@
 import Container from '@/component/container/src/index'
 import { useRoute, useRouter } from 'vue-router'
-import { usePageCache } from '@/hooks/use-page-cache'
+import { usePageCache } from '@/hooks'
 
 export default defineComponent({
   name: 'Detail',

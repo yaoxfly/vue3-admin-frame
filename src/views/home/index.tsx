@@ -1,6 +1,6 @@
 import config from '@/config'
 import { formDataAppend, download as downloadFile } from '@/request/hook'
-import user from '@/apis/user'
+import { upload, download } from '@/api'
 import Container from '@/component/container/src/index'
 export default defineComponent({
   name: 'Home',
@@ -26,7 +26,7 @@ export default defineComponent({
       }
 
       try {
-        const response = await user.upload(formDataAppend({
+        const response = await upload(formDataAppend({
           file: selectedFile.value,
           arr: [1, 2],
           test: '测试'
@@ -37,8 +37,8 @@ export default defineComponent({
       }
     }
 
-    const download = () => {
-      user.download().then((res) => {
+    const downloadPdf = () => {
+      download().then((res) => {
         downloadFile(res, '测试.pdf')
       })
     }
@@ -51,7 +51,7 @@ export default defineComponent({
            <Container >
             <input type="file" onChange={(event) => handleFileChange(event)} />
             <button onClick={() => uploadFile()}>上传文件</button>
-            <button onClick={() => download()}>下载文件</button>
+            <button onClick={() => downloadPdf()}>下载文件</button>
             <div class='tw-flex tw-justify-center  tw-items-center  tw-bg-gray-50  tw-text-black'>
               <span > 我是首页{config.server}</span>
             </div>

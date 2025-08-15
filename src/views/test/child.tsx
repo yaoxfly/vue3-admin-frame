@@ -1,4 +1,4 @@
-import { useExpose } from '@/hooks/use-expose'
+import { useExpose } from '@/hooks'
 const props = {
   show: {
     type: Boolean,

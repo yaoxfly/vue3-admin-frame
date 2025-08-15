@@ -44,7 +44,7 @@ export function usePageCache (componentName?: string) {
       next()
     })
 
-    router.afterEach((to, from) => {
+    router.afterEach((to) => {
       // 进入页面时的缓存控制
       if (to.name) {
         const toComponentName = String(to.name)

@@ -1,12 +1,10 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
 import { createPinia } from 'pinia'
 import '@/assets/style/index.scss'
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
-import { routerGuard } from './router/routerGuard'
-import { dynamicRoutes } from './router/dynamicRoutes'
+import { router, routerGuard, dynamicRoutes } from '@/router'
 
 async function bootstrap () {
   const app = createApp(App)

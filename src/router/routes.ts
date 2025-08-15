@@ -2,7 +2,7 @@
  * @description 路由配置
  */
 import Layout from '@/layout/index'
-const routes = [
+export const routes = [
   {
     path: '/',
     name: 'layout',

@@ -1,7 +1,9 @@
 import routes from './routes'
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
-
-export default router
+export * from './lib/dynamicRoutes'
+export * from './lib/generateRoutesFromMenu'
+export * from './lib/generateNonMenuRoutes'
+export * from './lib/routerGuard'

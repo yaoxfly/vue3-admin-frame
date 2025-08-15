@@ -5,7 +5,7 @@ import type { Router } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import '@/assets/style/nprogress.scss'
-import { useLayTag } from '@/store/lay-tag'
+import { useLayTag } from '@/store'
 
 // 配置NProgress - 调整为更慢的速度
 NProgress.configure({

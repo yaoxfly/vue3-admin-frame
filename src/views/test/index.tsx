@@ -1,7 +1,7 @@
 import Child from './child'
 import { btnParam } from './types'
-import { useTestStore } from '@/store/test-store'
-import user from '@/apis/user'
+import { useTestStore } from '@/store'
+import { deleteUserInfo } from '@/api'
 import Container from '@/component/container/src/index'
 export default defineComponent({
   name: 'Father',
@@ -41,7 +41,7 @@ export default defineComponent({
         arr: [1, 2, 3],
         message: '500自定义错误信息'
       }
-      user.deleteUserInfo(param).then(res => {
+      deleteUserInfo(param).then(res => {
         console.log(res, '用户信息')
       }).catch(res => {
         console.log(res, '错误信息')
