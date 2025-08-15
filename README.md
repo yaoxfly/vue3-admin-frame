@@ -15,7 +15,6 @@ The current framework is a minimalist framework based on vue3 + typeScript + vit
 - [x] mock
 - [x] axios   (Complete secondary encapsulation of axios, global error interception, common request encapsulation with TypeScript)
 - [x] pinia
-- [x] tailwindcss    (Vscode can install tailwindcss plug-in, syntax prompt)
 
 - [x] vite-plugin-checker   (If the ts type is checked, the ts error message is displayed on the CLI and page. If the TS type is not corrected, the development cannot continue)
 

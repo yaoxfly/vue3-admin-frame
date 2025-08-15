@@ -15,7 +15,6 @@
 - [x] mock
 - [x] axios (使用TypeScript对axios整个二次封装,全局错误拦截、常用请求封装)
 - [x] pinia
-- [x] tailwindcss   (vscode可安装tailwindcss插件，有语法提示)
 - [x] vite-plugin-checker   (ts类型检查，ts报错信息在命令行和页面上显示，不修正无法继续开发)
 - [x] @vueuse/core  (基于Composition API的实用函数集合，vue的hook  [官网](https://vueuse.org/) )
 
