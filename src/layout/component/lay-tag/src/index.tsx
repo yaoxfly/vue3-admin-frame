@@ -550,7 +550,7 @@ export default defineComponent({
           </div>
         </div>
 
-        {/* 底部下拉菜单 */}
+        {/* 顶部下拉菜单 */}
         <div class={styles['lay-tag-drop-down-menu']}>
           <el-dropdown trigger="click" onVisibleChange={handleOpen}>
             {{

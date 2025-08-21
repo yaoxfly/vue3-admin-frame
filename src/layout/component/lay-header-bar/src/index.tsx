@@ -9,7 +9,7 @@ export default defineComponent({
     const fullScreen = ref(false)
     const goFullscreen = () => {
       return () => {
-        const elem = window.document.getElementById('app')
+        const elem = window.document.documentElement
         if (!elem) return
         if (elem?.requestFullscreen) {
           elem.requestFullscreen()
