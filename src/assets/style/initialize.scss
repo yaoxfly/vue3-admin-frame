@@ -33,26 +33,39 @@ button {
 }
 
 a {
-  color: inherit; /* 继承父元素的颜色 */
-  text-decoration: inherit; /* 去除默认的下划线 */
+  color: inherit;
+  /* 继承父元素的颜色 */
+  text-decoration: inherit;
+  /* 去除默认的下划线 */
 }
 
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-size: inherit;
   font-weight: inherit;
-  margin: 0; /* 去除默认的 margin */
+  margin: 0;
+  /* 去除默认的 margin */
 }
 
 p {
-  margin: 0; /* 去除默认的 margin */
+  margin: 0;
+  /* 去除默认的 margin */
 }
 
 
-ol, ul {
-  list-style: none; /* 去除默认的列表符号 */
-  margin: 0; /* 去除默认的 margin */
-  padding: 0; /* 去除默认的 padding */
+ol,
+ul {
+  list-style: none;
+  /* 去除默认的列表符号 */
+  margin: 0;
+  /* 去除默认的 margin */
+  padding: 0;
+  /* 去除默认的 padding */
 }
 
 svg {

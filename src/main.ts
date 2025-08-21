@@ -1,11 +1,10 @@
 import { createApp } from 'vue'
+import { router, routerGuard, dynamicRoutes } from '@/router' // 一定要放在样式前面
 import App from './App.vue'
 import { createPinia } from 'pinia'
 import '@/assets/style/index.scss'
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
-import { router, routerGuard, dynamicRoutes } from '@/router'
-
 async function bootstrap () {
   const app = createApp(App)
   app.use(createPinia())

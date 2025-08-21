@@ -8,10 +8,3 @@
 <template>
   <router-view />
 </template>
-
-<style>
-body,
-html {
-  overflow: hidden;
-}
-</style>
