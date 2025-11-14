@@ -5,13 +5,24 @@
   <link rel="icon" href="/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- globalThis polyfill for older browsers (Chrome 63 etc) -->
+  <script>
+  if(typeof globalThis==='undefined'){
+    Object.defineProperty(Object.prototype,'__global__',{
+      get(){return this;},
+      configurable:true
+    });
+    __global__.globalThis=__global__;
+    delete Object.prototype.__global__;
+  }
+  </script>
+
   <% for(let item of cdn.css) { %>
     <% if (item.rel) { %>
       <link href="<%=item.url%>" rel="<%=item.rel%>"  <%=item.crossorigin%>  as="style"  />
     <% } %>
     <link rel="stylesheet" href="<%=item.url%>"  as="style" />
-    <% }
-  %>
+  <% } %>
 
   <% for(let item of cdn.js) { %>
     <!-- 预加载，刷新资源的缓存，加载后并不执行，需要执行的时候再执行-->
@@ -19,8 +30,7 @@
       <link href="<%=item.url%>" rel="<%=item.rel%>"  <%=item.crossorigin%>   as="script" />
     <% } %>
     <script src="<%=item.url%>"></script>
-   <% }
-   %>
+  <% } %>
 
   <title><%- title %></title>
 </head>

@@ -10,3 +10,14 @@
   align-items: center;
   padding: 0 16px;
 }
+
+.lay-header-bar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  //兼容旧浏览器写法
+  &>section:not(:last-child) {
+    margin-right: 16px;
+  }
+}

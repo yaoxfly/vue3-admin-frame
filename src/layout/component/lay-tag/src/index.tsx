@@ -39,11 +39,11 @@ export default defineComponent({
     // 只添加首页标签，但不设置为活动标签
     layTagStore.addTagToStart(props.homeSet.path, props.homeSet.title)
 
-    /** 滚动测试 -start */
-    // for (let i = 0; i < 30; i++) {
+    // /** 滚动测试 -start */
+    // for (let i = 30; i > 0; i--) {
     //   layTagStore.addTagToStart(props.homeSet.path + i, props.homeSet.title + i)
     // }
-    /** 滚动测试 -end */
+    // /** 滚动测试 -end */
 
     const activeTag = computed(() => layTagStore.getActiveTag)
 
@@ -496,6 +496,7 @@ export default defineComponent({
 
     // 渲染组件
     return () => (
+      <div class={styles['lay-tag']}>
       <div class={styles['lay-tag-wrapper']} onClick={hideContextMenu} style={
           props.fill
             ? { maxWidth: '100vw' } // props.fill为true时应用100vh
@@ -591,6 +592,7 @@ export default defineComponent({
             </ul>
           </div>
         )}
+      </div>
       </div>
     )
   }

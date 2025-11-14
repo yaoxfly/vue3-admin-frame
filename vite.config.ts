@@ -14,7 +14,7 @@ import autoprefixer from 'autoprefixer'
 import browserslist from 'browserslist' // 统一js/css兼容性
 import checker from 'vite-plugin-checker'
 import externalGlobals from 'rollup-plugin-external-globals'
-const browserslistConfig = browserslist.loadConfig({ path: '.' }) // npx browserslist "> 0.04%, last 2 versions,Firefox ESR,not dead" 查询兼容的浏览器
+const browserslistConfig = browserslist.loadConfig({ path: '.' }) // npx browserslist "> 0.02%, last 2 versions,Firefox ESR,not dead" 查询兼容的浏览器
 const externalGlobalsConfig = {
   vue: 'Vue',
   axios: 'axios',
@@ -30,42 +30,42 @@ const cdn = {
   js: [
     {
       // vue
-      url: 'https://cdn.jsdelivr.net/npm/vue@3.3.13/dist/vue.global.prod.js',
+      url: 'https://fastly.jsdelivr.net/npm/vue@3.3.13/dist/vue.global.prod.js',
       rel: 'preload' // preload | prefetch
     },
     {
       // vue-demi pinia 前置插件
-      url: 'https://cdn.jsdelivr.net/npm/vue-demi@0.13.11/lib/index.iife.min.js',
+      url: 'https://fastly.jsdelivr.net/npm/vue-demi@0.13.11/lib/index.iife.min.js',
       rel: 'preload'
     },
     {
       // pinia
-      url: 'https://cdn.jsdelivr.net/npm/pinia@2.1.7/dist/pinia.iife.prod.js',
+      url: 'https://fastly.jsdelivr.net/npm/pinia@2.1.7/dist/pinia.iife.prod.js',
       rel: 'preload'
     },
     {
       // vue-router
-      url: 'https://cdn.jsdelivr.net/npm/vue-router@4.4.0/dist/vue-router.global.prod.js',
+      url: 'https://fastly.jsdelivr.net/npm/vue-router@4.4.0/dist/vue-router.global.prod.js',
       rel: 'preload'
     },
     {
       // axios
-      url: 'https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js',
+      url: 'https://fastly.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js',
       rel: 'preload'
     },
     {
       // qs
-      url: 'https://cdn.jsdelivr.net/npm/qs@6.12.3/dist/qs.min.js',
+      url: 'https://fastly.jsdelivr.net/npm/qs@6.12.3/dist/qs.min.js',
       rel: 'preload'
     },
     {
       // shared  vueuse/core 前置插件
-      url: 'https://cdn.jsdelivr.net/npm/@vueuse/shared@10.11.0/index.iife.min.js',
+      url: 'https://fastly.jsdelivr.net/npm/@vueuse/shared@10.11.0/index.iife.js',
       rel: 'preload'
     },
     {
       // @vueuse/core
-      url: 'https://cdn.jsdelivr.net/npm/@vueuse/core@10.11.0/index.iife.js',
+      url: 'https://fastly.jsdelivr.net/npm/@vueuse/core@10.11.0/index.iife.js',
       rel: 'preload'
     }
   ]
@@ -100,9 +100,8 @@ export default ({ mode }: ConfigEnv): UserConfigExport => defineConfig({
     visualizer(),
     legacy({
       targets: browserslistConfig,
-      additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+      additionalLegacyPolyfills: ['regenerator-runtime/runtime', 'core-js/features/array/flat-map'],
       polyfills: true
-
     }),
     AutoImport({
       include: [
@@ -170,9 +169,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => defineConfig({
         autoprefixer
       ]
     }
-
   },
-
   resolve: { alias: { '@': resolve(__dirname, 'src') } },
   server: {
     // 指定服务网络,不然只会显示本地的
@@ -185,20 +182,19 @@ export default ({ mode }: ConfigEnv): UserConfigExport => defineConfig({
       }
     }
   },
-
   build: {
-    target: browserslistConfig,
+    // cssMinify: false, //打包不会压缩 CSS，会保留原始结构，可查看css打包异常
     outDir: './dist/',
     sourcemap: false,
-    cssCodeSplit: true,
+    cssCodeSplit: true, // 开发环境和测试环境样式不一致可尝试设置false，紧急上线时用
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
-        drop_debugger: true
+        drop_console: loadEnv(mode, process.cwd()).VITE_APP_CURRENT_MODE === 'production',
+        drop_debugger: loadEnv(mode, process.cwd()).VITE_APP_CURRENT_MODE === 'production'
       }
     },
-    chunkSizeWarningLimit: 1000, // chunks 大小限制
+    chunkSizeWarningLimit: 2000, // chunks 大小限制
     rollupOptions: {
       output: {
         chunkFileNames: 'static/js/[name]-[hash].js',

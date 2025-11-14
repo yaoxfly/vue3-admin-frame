@@ -84,7 +84,7 @@ export default defineComponent({
 
     return () => (
       <div class={styles['lay-menu']}>
-        <div class={[styles['menu-title'], { 'el-menu--collapse': menuStore.getIsCollapse }]}>
+        <div class={[styles['menu-title'], { 'el-menu--collapse': menuStore.getIsCollapse }]} >
           <img src={props.logo} class={styles.logo}></img>
           <span class={styles['system-name'] } style={{ opacity: menuStore.getIsCollapse ? 0 : 1 }} >Vue3AdminFrame</span>
         </div>
@@ -92,10 +92,11 @@ export default defineComponent({
           {...attrs}
           class={styles['el-menu-vertical']}
           collapse={menuStore.getIsCollapse}
+
         >
           {renderMenu(props.data)}
         </el-menu>
-        <div class={[styles['collapse-icon'], { 'el-menu--collapse': menuStore.getIsCollapse }]} onClick={() => collapseIconClick()}>
+        <div class={[styles['collapse-icon'], { 'el-menu--collapse': menuStore.getIsCollapse }]} onClick={() => collapseIconClick()} >
           <el-tooltip content={menuStore.getIsCollapse ? '点击展开' : '点击折叠'} placement="right" effect="light">
             <el-icon>{menuStore.getIsCollapse ? <Expand /> : <Fold />}</el-icon>
           </el-tooltip>

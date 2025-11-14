@@ -2,7 +2,6 @@
 $top-and-bottom-blocks-height: 40px;
 $height: 100vh;
 
-
 .lay-menu {
   position: relative;
   user-select: none;
@@ -23,7 +22,7 @@ $height: 100vh;
   font-size: 16px;
   font-weight: 500;
   color: #303133;
-  transition: width 0.3s ease-in-out;
+  transition: width 0.12s ease-in-out;
 
 
   .logo {
@@ -38,9 +37,9 @@ $height: 100vh;
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
-    transition: opacity 0.2s ease-in-out;
   }
 }
+
 
 
 /**
@@ -49,7 +48,6 @@ $height: 100vh;
 
 .el-menu-vertical {
   height: calc($height - #{2 * $top-and-bottom-blocks-height });
-  width: $menu-width;
   overflow: hidden;
   overflow-y: auto;
 
@@ -59,29 +57,8 @@ $height: 100vh;
     margin-right: 10px;
   }
 
-  :global {
-
-    // 自定义菜单高亮样式
-    .el-menu-item.is-active {
-      background-color: rgba(var(--color-primary-base), 0.08);
-      color: var(--el-color-primary);
-      font-weight: 500;
-      position: relative;
-      transition: all 0.3s ease;
-      box-shadow: inset 0 0 0 1px rgba(var(--color-primary-base), 0.1);
-    }
-
-    // 确保收缩状态下的样式不变
-    .el-menu--collapse {
-      .el-menu-item.is-active {
-        background-color: rgba(var(--color-primary-base), 0.08);
-        color: var(--el-color-primary);
-        font-weight: 500;
-        box-shadow: inset 0 0 0 1px rgba(var(--color-primary-base), 0.1);
-      }
-    }
-  }
 }
+
 
 /**
  * 侧边栏收缩图标
@@ -96,7 +73,27 @@ $height: 100vh;
   align-items: center;
   padding-left: 16px;
   transition-property: width;
-  transition-duration: 0.3s;
+  transition-duration: 0.12s;
   transition-timing-function: ease-in-out;
   background: #fff;
+}
+
+
+/* 全局样式修改 */
+:global {
+  .el-menu--collapse {
+    width: calc(var(--el-menu-icon-width) + var(--el-menu-base-level-padding) * 2) !important;
+
+    .el-menu-item.is-active {
+      background-color: rgba(var(--color-primary-base), 0.08);
+      color: var(--el-color-primary);
+      font-weight: 500;
+      box-shadow: inset 0 0 0 1px rgba(var(--color-primary-base), 0.1);
+    }
+  }
+
+  .horizontal-collapse-transition {
+    /* 横向折叠（宽度）过渡 */
+    transition: width 0.1s ease-in-out !important;
+  }
 }
