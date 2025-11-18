@@ -63,6 +63,11 @@ export const useMenuStore = defineStore('menu', () => {
       index: '/tag-test',
       title: '标签测试',
       icon: markRaw(Location)
+    },
+    {
+      index: '/vue-test',
+      title: 'vue测试',
+      icon: markRaw(Location)
     }
   ]
 
