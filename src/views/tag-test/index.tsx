@@ -12,11 +12,11 @@ export default defineComponent({
     const { pushWithoutCache } = usePageCache('TagTest')
 
     const goToDetail = () => {
-      router.push('/detail?id=123')
+      router.push('/tag-test/detail?id=123')
     }
 
     const goToDetailWithoutCache = () => {
-      pushWithoutCache('/detail?id=456')
+      pushWithoutCache('/tag-test/detail?id=456')
     }
 
     return () => <>
