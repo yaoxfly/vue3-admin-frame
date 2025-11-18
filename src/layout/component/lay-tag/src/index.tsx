@@ -1,4 +1,4 @@
-import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import { defineComponent, ref, onMounted, onBeforeUnmount, computed, watch, nextTick } from 'vue'
 import { ArrowLeft, ArrowRight, ArrowDown } from '@element-plus/icons-vue'
 import styles from '../style/index.module.scss'
 import { useLayTag, useMenuStore } from '@/store'
@@ -431,11 +431,16 @@ export default defineComponent({
       return path === (tags.value.length > 1 ? tags.value[tags.value.length - 1].path : '')
     })
 
+    // 监听标签数量变化，自动更新滚动箭头状态
+    watch(() => tags.value.length, () => {
+      nextTick(updateArrowsVisibility)
+    })
+
     onMounted(() => {
       // 初始化滚动事件监听
       if (scrollContainer.value) {
         // 延迟执行初始箭头状态更新，确保DOM已渲染
-        setTimeout(updateArrowsVisibility, 100)
+        nextTick(updateArrowsVisibility)
 
         // 添加滚动和窗口大小变化事件监听
         scrollContainer.value.addEventListener('scroll', updateArrowsVisibility)
