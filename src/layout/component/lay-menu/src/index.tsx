@@ -3,7 +3,7 @@ import styles from '../style/index.module.scss'
 import { Expand, Fold } from '@element-plus/icons-vue'
 import { MenuItem } from './types'
 import { useRouter } from 'vue-router'
-import { useMenuStore } from '@/store'
+import { useMenuStore, useSetStore } from '@/store'
 
 export default defineComponent({
   name: 'LayMenu',
@@ -22,6 +22,7 @@ export default defineComponent({
   setup (props, { attrs }) {
     const router = useRouter()
     const menuStore = useMenuStore()
+    const setStore = useSetStore()
 
     const renderIcon = (icon: any) => {
       if (typeof icon === 'string') {
@@ -85,7 +86,7 @@ export default defineComponent({
     return () => (
       <div class={styles['lay-menu']}>
         <div class={[styles['menu-title'], { 'el-menu--collapse': menuStore.getIsCollapse }]} >
-          <img src={props.logo} class={styles.logo}></img>
+          {!setStore.config.hideLogo && <img src={props.logo} class={styles.logo}></img>}
           <span class={styles['system-name'] } style={{ opacity: menuStore.getIsCollapse ? 0 : 1 }} >Vue3AdminFrame</span>
         </div>
         <el-menu

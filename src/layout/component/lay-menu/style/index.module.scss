@@ -78,15 +78,12 @@ $height: 100vh;
   background: #fff;
 }
 
-
 /* 全局样式修改 */
 :global {
-  .el-menu--collapse {
-    width: calc(var(--el-menu-icon-width) + var(--el-menu-base-level-padding) * 2) !important;
-
+  .el-menu--vertical {
     .el-menu-item.is-active {
       background-color: rgba(var(--color-primary-base), 0.08);
-      color: var(--el-color-primary);
+      color: var(--color-primary);
       font-weight: 500;
       box-shadow: inset 0 0 0 1px rgba(var(--color-primary-base), 0.1);
     }

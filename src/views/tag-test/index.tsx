@@ -40,7 +40,7 @@ export default defineComponent({
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button
               onClick={goToDetail}
-              style="padding: 8px 16px; background: #409eff; color: white; border: none; border-radius: 4px; cursor: pointer;"
+              style="padding: 8px 16px; background: var(--color-primary); color: white; border: none; border-radius: 4px; cursor: pointer;"
             >
               跳转到详情页
             </button>

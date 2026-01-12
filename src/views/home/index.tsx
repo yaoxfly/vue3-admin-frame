@@ -5,11 +5,6 @@ import Container from '@/component/container/src/index'
 export default defineComponent({
   name: 'Home',
   setup () {
-    // 主题切换
-    const setTheme = () => {
-      document.documentElement.style.setProperty('--color-primary-base', '16,185,129')
-    }
-    setTheme()
     const input = useStorage('input-value', '可同步数据到localstorage的输入框') // vueuse的api，自动将ref同步到localstorage,实现双向绑定
     const selectedFile = ref<File | null>(null)
     const handleFileChange = (event: Event) => {

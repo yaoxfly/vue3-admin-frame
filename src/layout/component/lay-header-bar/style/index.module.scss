@@ -21,3 +21,70 @@
     margin-right: 16px;
   }
 }
+
+
+
+.drawer-title {
+  font-size: 14px;
+  font-weight: bold;
+
+  &:not(:first-child) {
+    margin-top: 20px;
+  }
+}
+
+.drawer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+/* 全局样式修改 */
+:global {
+  .el-drawer {
+    width: 16% !important;
+
+    .el-drawer__header {
+      padding-bottom: 22px;
+      border: 1px solid var(--el-border-color);
+      margin-bottom: 0
+    }
+
+    .el-drawer__title {
+      font-weight: bold;
+    }
+  }
+}
+
+/* 主题色样式 - 一行布局 */
+.theme-colors {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-top: 12px;
+  justify-content: space-between;
+
+  .theme-color-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0 3px;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    .theme-color {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+}
