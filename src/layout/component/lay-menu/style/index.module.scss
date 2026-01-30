@@ -2,10 +2,71 @@
 $top-and-bottom-blocks-height: 40px;
 $height: 100vh;
 
+@mixin menu-dark-theme {
+  background-color: var(--color-primary-dark-8);
+  transition: box-shadow 0.3s ease;
+  color: rgba(255, 255, 255, 0.8);
+
+  .el-menu-item {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+
+    &:not(.is-active):hover {
+      background-color: rgba(var(--color-primary-base), 0.15);
+      color: #fff;
+    }
+
+    &.is-active {
+      background-color: rgba(var(--color-primary-base), 0.75);
+      color: #fff;
+    }
+  }
+
+  .el-sub-menu {
+
+    .el-menu-item,
+    .el-menu-item-group {
+      background-color: var(--color-primary-dark-9);
+    }
+
+    .el-menu-item {
+
+      &:not(.is-active):hover {
+        background-color: rgba(var(--color-primary-base), 0.15);
+        color: #fff;
+      }
+
+      &.is-active {
+        background-color: rgba(var(--color-primary-base), 0.75);
+        color: #fff;
+      }
+    }
+
+
+
+    .el-sub-menu__title {
+      color: #fff;
+      font-weight: 500;
+
+      &:hover {
+        background-color: rgba(var(--color-primary-base), 0.15);
+        color: #fff;
+      }
+    }
+
+    .el-menu-item-group__title,
+    .el-sub-menu__icon-arrow {
+      color: rgba(255, 255, 255, 0.75);
+    }
+  }
+}
+
+
 .lay-menu {
   position: relative;
   user-select: none;
 }
+
 
 /**
  * 顶部标题栏
@@ -22,7 +83,7 @@ $height: 100vh;
   font-size: 16px;
   font-weight: 500;
   color: #303133;
-  transition: width 0.12s ease-in-out;
+  transition: width 0.06s ease-in-out;
 
 
   .logo {
@@ -37,9 +98,9 @@ $height: 100vh;
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
+
   }
 }
-
 
 
 /**
@@ -56,7 +117,6 @@ $height: 100vh;
     margin-left: 2px;
     margin-right: 10px;
   }
-
 }
 
 
@@ -72,11 +132,35 @@ $height: 100vh;
   justify-content: flex-start;
   align-items: center;
   padding-left: 16px;
-  transition-property: width;
-  transition-duration: 0.12s;
-  transition-timing-function: ease-in-out;
+  transition: width 0.06s ease-in-out;
   background: #fff;
 }
+
+
+//菜单非白色的颜色
+.lay-menu-no-white {
+  :global {
+    .el-menu {
+      @include menu-dark-theme;
+    }
+  }
+
+  .menu-title {
+    background-color: var(--color-primary-dark-75);
+  }
+
+  .system-name {
+    color: #fff;
+  }
+
+  .collapse-icon {
+    background: var(--color-primary-dark-75);
+    color: var(--color-primary);
+    border-top: 1px solid var(--color-primary-base, 0.95);
+  }
+}
+
+
 
 /* 全局样式修改 */
 :global {
@@ -91,6 +175,19 @@ $height: 100vh;
 
   .horizontal-collapse-transition {
     /* 横向折叠（宽度）过渡 */
-    transition: width 0.1s ease-in-out !important;
+    transition: width 0.06s ease-in-out !important;
+  }
+
+  //若不添加这个，打包后宽度计算会出现1px的误差
+  .el-menu--collapse {
+    width: calc(var(--el-menu-icon-width) + var(--el-menu-base-level-padding) * 2);
+  }
+
+  [data-menu-theme='no-white'] {
+    .el-menu--vertical.el-menu--popup-container {
+      .el-menu--popup {
+        @include menu-dark-theme;
+      }
+    }
   }
 }

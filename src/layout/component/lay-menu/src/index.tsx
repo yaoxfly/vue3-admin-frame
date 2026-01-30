@@ -23,6 +23,28 @@ export default defineComponent({
     const router = useRouter()
     const menuStore = useMenuStore()
     const setStore = useSetStore()
+    // 响应式变量，用于控制是否添加 lay-menu-white 类
+    const isWhiteTheme = ref(false)
+    /**
+     * 监听主题色变化
+     * 当主题色为 #ffffff 时，添加 lay-menu-white 类
+     * 当主题色为其他颜色时，移除 lay-menu-white 类
+     */
+    watch(
+      () => setStore.config.themeColor,
+      (newThemeColor) => {
+        // 检查当前主题色是否为白色
+        isWhiteTheme.value = newThemeColor === '#ffffff'
+        console.log('主题色变化:', newThemeColor, '是否为白色主题:', isWhiteTheme.value)
+
+        if (!isWhiteTheme.value) {
+          document.body.setAttribute('data-menu-theme', 'no-white')
+        } else {
+          document.body.removeAttribute('data-menu-theme')
+        }
+      },
+      { immediate: true } // 立即执行一次以初始化状态
+    )
 
     const renderIcon = (icon: any) => {
       if (typeof icon === 'string') {
@@ -84,10 +106,13 @@ export default defineComponent({
     }
 
     return () => (
-      <div class={styles['lay-menu']}>
+      <div class={[
+        styles['lay-menu'],
+        !isWhiteTheme.value ? styles['lay-menu-no-white'] : ''
+      ]}>
         <div class={[styles['menu-title'], { 'el-menu--collapse': menuStore.getIsCollapse }]} >
           {!setStore.config.hideLogo && <img src={props.logo} class={styles.logo}></img>}
-          <span class={styles['system-name'] } style={{ opacity: menuStore.getIsCollapse ? 0 : 1 }} >Vue3AdminFrame</span>
+          <span class={styles['system-name']} style={{ opacity: menuStore.getIsCollapse ? 0 : 1 }} >Vue3AdminFrame</span>
         </div>
         <el-menu
           {...attrs}

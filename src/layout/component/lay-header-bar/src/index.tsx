@@ -10,13 +10,13 @@ export default defineComponent({
   setup () {
     const setStore = useSetStore()
     const themeColors = [
+      { color: '#ffffff', name: '菜单无背景色,默认蓝' },
       { color: '#409EFF', name: '默认蓝' },
       { color: '#FF6A19', name: '活力橙' },
       { color: '#5EC928', name: '清新绿' },
       { color: '#8E3FFC', name: '优雅紫' },
       { color: '#FF7F50', name: '珊瑚色' },
-      { color: '#00CED1', name: '深青色' },
-      { color: '#6C757D', name: '高级灰' }
+      { color: '#00CED1', name: '深青色' }
     ]
 
     const hexToRgb = (hex: string) => {
@@ -36,9 +36,17 @@ export default defineComponent({
     // 切换主题色函数
     const changeThemeColor = (color: string) => {
       setStore.config.themeColor = color
+      if (color === '#ffffff') {
+        document.documentElement.style.setProperty('--color-primary-base', hexToRgb('#409EFF'))
+        // document.documentElement.style.setProperty('--border-color-base', 'var(--border-color-base)')
+        return
+      }
       const rgb = hexToRgb(color)
       document.documentElement.style.setProperty('--color-primary-base', rgb)
     }
+
+    // 刷新后也能保存的颜色
+    changeThemeColor(setStore.config.themeColor)
 
     // 全屏状态管理
     const fullScreen = ref(false)
@@ -171,11 +179,12 @@ export default defineComponent({
                 <div
                   class={styles['theme-color']}
                   style={{
-                    backgroundColor: theme.color
+                    backgroundColor: theme.color,
+                    borderColor: theme.color === '#ffffff' ? 'var(--border-color-base)' : theme.color
                   }}
                 >
                   {setStore.config.themeColor === theme.color && (
-                    <el-icon color="white" style={{ 'font-size': '16px' }}><Check /></el-icon>
+                    <el-icon color={theme.color === '#ffffff' ? '#000000' : 'white'} style={{ 'font-size': '16px' }}><Check /></el-icon>
                   )}
                 </div>
               </div>
@@ -189,17 +198,17 @@ export default defineComponent({
           {/* 遍历配置项 */}
           {configItems.map((item) => (
             <section class={styles['drawer-content']} key={item.key}>
-                {/* 配置项标签 */}
-                <p >{item.label}</p>
+              {/* 配置项标签 */}
+              <p >{item.label}</p>
 
-                {/* 配置项开关 */}
-                <el-switch
-                  v-model={setStore.config[item.key]} // 绑定到store中的配置项
-                  size="large"
-                  inline-prompt
-                  active-text="开"
-                  inactive-text="关"
-                />
+              {/* 配置项开关 */}
+              <el-switch
+                v-model={setStore.config[item.key]} // 绑定到store中的配置项
+                size="large"
+                inline-prompt
+                active-text="开"
+                inactive-text="关"
+              />
             </section>
           ))}
 

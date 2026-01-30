@@ -39,11 +39,11 @@ export default defineComponent({
     // 只添加首页标签，但不设置为活动标签
     layTagStore.addTagToStart(props.homeSet.path, props.homeSet.title)
 
-    // /** 滚动测试 -start */
+    /** 滚动测试 -start */
     // for (let i = 30; i > 0; i--) {
     //   layTagStore.addTagToStart(props.homeSet.path + i, props.homeSet.title + i)
     // }
-    // /** 滚动测试 -end */
+    /** 滚动测试 -end */
 
     const activeTag = computed(() => layTagStore.getActiveTag)
 

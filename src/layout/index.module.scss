@@ -25,35 +25,26 @@
   flex-direction: column;
   overflow: hidden;
 
-  // 微调后的左右切换动画
   :global(> *) {
-    animation: smoothSlide 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: transform, opacity;
-    transform: translateZ(0);
+    /* PC 端可以将时间稍微缩短到 0.35s 或 0.4s，感觉更响应及时 */
+    animation: modernFloatIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+    /* PC 端其实可以省略 -webkit- 前缀，除非你要兼容极老的浏览器 */
+    /* 保持这个属性可以防止文字在动画结束瞬间抖动 */
+    backface-visibility: hidden;
+
   }
 }
 
-// 快速消失，慢慢出现的切换动画
-@keyframes smoothSlide {
+@keyframes modernFloatIn {
   0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  // 消失阶段 - 极快消失
-  10% {
     opacity: 0;
-    transform: translateX(40px);
-  }
-
-  // 从左侧出现 - 稍作停顿
-  30% {
-    opacity: 0;
-    transform: translateX(-40px);
+    /* PC 上 10px 的位移很优雅，0.99 缩放保持清晰 */
+    transform: translate3d(0, 10px, 0) scale(0.99);
   }
 
   100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }

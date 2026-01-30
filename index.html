@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" href="/favicon.ico" />
@@ -7,35 +8,87 @@
 
   <!-- globalThis polyfill for older browsers (Chrome 63 etc) -->
   <script>
-  if(typeof globalThis==='undefined'){
-    Object.defineProperty(Object.prototype,'__global__',{
-      get(){return this;},
-      configurable:true
-    });
-    __global__.globalThis=__global__;
-    delete Object.prototype.__global__;
-  }
+
+    (function () {
+      var ua = navigator.userAgent;
+      var isChrome = ua.indexOf('Chrome') > -1;
+      var chromeVer = isChrome ? parseInt(ua.split('Chrome/')[1].split('.')[0], 10) : 100;
+
+      // 1. 核心死线：检测不到 Proxy (低于 Chrome 49)
+      if (typeof Proxy === 'undefined') {
+        var fatalMsg = '【系统提示】检测到您的浏览器版本过低，无法支撑现代业务运行。\n建议方案：\n1. 请联系信息部门升级浏览器；\n2. 若您使用的是双核浏览器，请切换至“极速模式”。';
+        alert(fatalMsg);
+        if (window.stop) window.stop();
+        return;
+      }
+
+      // 2. 体验建议线：使用 sessionStorage 控制显示
+      // 只要本会话中没有点击过关闭（值为 null），就显示提示
+      var hasClosed = sessionStorage.getItem('ignore_browser_warning');
+
+      if (isChrome && chromeVer < 63 && !hasClosed) {
+        // 确保在 DOM 加载完成后插入
+        var injectNotice = function () {
+          if (document.getElementById('browser-upgrade-notice')) return;
+
+          var div = document.createElement('div');
+          div.id = 'browser-upgrade-notice';
+          // 样式优化：增加了 position:relative 确保关闭按钮定位正常
+          div.style = 'background:#fffbe6; color:#856404; padding:10px 45px 10px 15px; text-align:center; font-size:13px; border-bottom:1px solid #ffe58f; position:relative; z-index:99999; line-height:1.5;';
+
+          div.innerHTML = '<strong>建议升级：</strong>当前 Chrome ' + chromeVer + ' 版本较低，系统已开启兼容模式。建议升级浏览器以获得最佳体验。' +
+            '<span id="close-notice-btn" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:20px; line-height:1; color:#999;">×</span>';
+
+          document.body.insertBefore(div, document.body.firstChild);
+
+          // 绑定关闭逻辑
+          document.getElementById('close-notice-btn').onclick = function () {
+            div.style.display = 'none';
+            // 标记为已忽略，当前会话不再弹出
+            sessionStorage.setItem('ignore_browser_warning', 'true');
+          };
+        };
+
+        // 如果页面已经加载完成则直接执行，否则等待加载
+        if (document.readyState === 'complete') {
+          injectNotice();
+        } else {
+          window.addEventListener('load', injectNotice);
+        }
+      }
+    })();
+
+    if (typeof globalThis === 'undefined') {
+      Object.defineProperty(Object.prototype, '__global__', {
+        get () { return this; },
+        configurable: true
+      });
+      __global__.globalThis = __global__;
+      delete Object.prototype.__global__;
+    }
   </script>
 
   <% for(let item of cdn.css) { %>
     <% if (item.rel) { %>
-      <link href="<%=item.url%>" rel="<%=item.rel%>"  <%=item.crossorigin%>  as="style"  />
-    <% } %>
-    <link rel="stylesheet" href="<%=item.url%>"  as="style" />
-  <% } %>
+      <link href="<%=item.url%>" rel="<%=item.rel%>" <%=item.crossorigin%> as="style" />
+      <% } %>
+        <link rel="stylesheet" href="<%=item.url%>" as="style" />
+        <% } %>
 
-  <% for(let item of cdn.js) { %>
-    <!-- 预加载，刷新资源的缓存，加载后并不执行，需要执行的时候再执行-->
-    <% if (item.rel) { %>
-      <link href="<%=item.url%>" rel="<%=item.rel%>"  <%=item.crossorigin%>   as="script" />
-    <% } %>
-    <script src="<%=item.url%>"></script>
-  <% } %>
+          <% for(let item of cdn.js) { %>
+            <!-- 预加载，刷新资源的缓存，加载后并不执行，需要执行的时候再执行-->
+            <% if (item.rel) { %>
+              <link href="<%=item.url%>" rel="<%=item.rel%>" <%=item.crossorigin%> as="script" />
+              <% } %>
+                <script src="<%=item.url%>"></script>
+                <% } %>
 
-  <title><%- title %></title>
+                  <title><%- title %></title>
 </head>
+
 <body>
   <div id="app"></div>
   <script type="module" src="/src/main.ts"></script>
 </body>
+
 </html>

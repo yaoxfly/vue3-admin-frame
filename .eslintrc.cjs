@@ -26,6 +26,7 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'vue/comment-directive': 'off',
     'no-unused-vars': 'off',
+    'no-debugger': 'off',
     'vue/no-parsing-error': [
       2,
       {

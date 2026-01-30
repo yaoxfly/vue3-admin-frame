@@ -4,6 +4,7 @@ export interface AppConfig {
   hideTag: boolean
   hideLogo: boolean
   grayMode: boolean
+  themeColor: string
 }
 
 export const useSetStore = defineStore('set', () => {
@@ -11,7 +12,8 @@ export const useSetStore = defineStore('set', () => {
   const config = useStorage<AppConfig>('config', {
     hideTag: false,
     hideLogo: false,
-    grayMode: false
+    grayMode: false,
+    themeColor: '#ffffff' // 默认
   })
 
   /**

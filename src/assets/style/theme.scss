@@ -4,17 +4,31 @@
   /* -----基础颜色----- *
   /* 主题 */
   --color-primary-base: 64, 158, 255;
-  --color-primary: rgba(var(--color-primary-base), 1); // #409EFF
-  --color-primary-light-1: color-mix(in srgb, var(--color-primary) 90%, #fff 10%);
-  --color-primary-light-2: color-mix(in srgb, var(--color-primary) 80%, #fff 20%);
-  --color-primary-light-3: color-mix(in srgb, var(--color-primary) 70%, #fff 30%);
-  --color-primary-light-4: color-mix(in srgb, var(--color-primary) 60%, #fff 40%);
-  --color-primary-light-5: color-mix(in srgb, var(--color-primary) 50%, #fff 50%);
-  --color-primary-light-6: color-mix(in srgb, var(--color-primary) 40%, #fff 60%);
-  --color-primary-light-7: color-mix(in srgb, var(--color-primary) 30%, #fff 70%);
-  --color-primary-light-8: color-mix(in srgb, var(--color-primary) 20%, #fff 80%);
-  --color-primary-light-9: color-mix(in srgb, var(--color-primary) 10%, #fff 90%);
-  --color-primary-dark-2: color-mix(in srgb, var(--color-primary) 10%, #000 90%);
+  --color-primary: rgba(var(--color-primary-base), 1);
+  /* Light */
+  --color-primary-light-1: color-mix(in oklch, var(--color-primary) 90%, #fff 10%);
+  --color-primary-light-2: color-mix(in oklch, var(--color-primary) 80%, #fff 20%);
+  --color-primary-light-3: color-mix(in oklch, var(--color-primary) 70%, #fff 30%);
+  --color-primary-light-4: color-mix(in oklch, var(--color-primary) 60%, #fff 40%);
+  --color-primary-light-5: color-mix(in oklch, var(--color-primary) 50%, #fff 50%);
+  --color-primary-light-6: color-mix(in oklch, var(--color-primary) 40%, #fff 60%);
+  --color-primary-light-7: color-mix(in oklch, var(--color-primary) 30%, #fff 70%);
+  --color-primary-light-8: color-mix(in oklch, var(--color-primary) 20%, #fff 80%);
+  --color-primary-light-9: color-mix(in oklch, var(--color-primary) 10%, #fff 90%);
+
+  /* Dark */
+  --color-primary-dark-1: color-mix(in oklch, var(--color-primary) 90%, #000 10%);
+  --color-primary-dark-2: color-mix(in oklch, var(--color-primary) 80%, #000 20%);
+  --color-primary-dark-3: color-mix(in oklch, var(--color-primary) 70%, #000 30%);
+  --color-primary-dark-4: color-mix(in oklch, var(--color-primary) 60%, #000 40%);
+  --color-primary-dark-5: color-mix(in oklch, var(--color-primary) 50%, #000 50%);
+  --color-primary-dark-6: color-mix(in oklch, var(--color-primary) 40%, #000 60%);
+  --color-primary-dark-7: color-mix(in oklch, var(--color-primary) 30%, #000 70%);
+  --color-primary-dark-75: color-mix(in oklch, var(--color-primary) 25%, #000 75%);
+  --color-primary-dark-8: color-mix(in oklch, var(--color-primary) 20%, #000 80%);
+  --color-primary-dark-85: color-mix(in oklch, var(--color-primary) 15%, #000 85%);
+  --color-primary-dark-9: color-mix(in oklch, var(--color-primary) 10%, #000 90%);
+  --color-menu-glass-bg: color-mix(in oklch, var(--color-primary-dark-8), transparent 15%);
 
   --el-color-primary: var(--color-primary);
   --el-color-primary-light-3: var(--color-primary-light-3);
@@ -23,6 +37,7 @@
   --el-color-primary-light-8: var(--color-primary-light-8);
   --el-color-primary-light-9: var(--color-primary-light-9);
   --el-color-primary-dark-2: var(--color-primary-dark-2);
+  --el-overlay-color-lighter: rgba(0, 0, 0, 0.3);
 
   /* 成功 */
   --color-success: #67c23a;
