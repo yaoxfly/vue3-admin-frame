@@ -193,25 +193,15 @@ export default ({ mode }: ConfigEnv): UserConfigExport => defineConfig({
     }
   },
   build: {
-    cssTarget: 'es2015',
     // cssMinify: false, //打包不会压缩 CSS，会保留原始结构，可查看css打包异常
     outDir: './dist/',
     sourcemap: false,
     cssCodeSplit: true, // 开发环境和测试环境样式不一致可尝试设置false，紧急上线时用
     minify: 'terser',
     terserOptions: {
-      safari10: true, // 解决一些旧版 WebKit 引擎的 Bug
       compress: {
         drop_console: loadEnv(mode, process.cwd()).VITE_APP_CURRENT_MODE === 'production',
-        drop_debugger: loadEnv(mode, process.cwd()).VITE_APP_CURRENT_MODE === 'production',
-        // 防止 Terser 转换出一些过于超前的压缩代码
-        ecma: 5,
-        arrows: false // 额外保护：禁止将普通函数压缩回箭头函数
-      },
-      output: {
-        // 强制输出 ES5 级别的代码
-        ecma: 5,
-        ascii_only: true // 解决老浏览器对特殊字符编码解析出错的问题
+        drop_debugger: loadEnv(mode, process.cwd()).VITE_APP_CURRENT_MODE === 'production'
       }
     },
     chunkSizeWarningLimit: 2000, // chunks 大小限制
