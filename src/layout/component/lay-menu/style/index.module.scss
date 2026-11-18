@@ -1,6 +1,7 @@
 @use '../../../../assets/style/base.scss' as *;
 $top-and-bottom-blocks-height: 40px;
 $height: 100vh;
+$collapse-transition: 0.12s cubic-bezier(0.4, 0, 0.2, 1);
 
 @mixin menu-dark-theme {
   background-color: var(--color-primary-dark-8);
@@ -65,6 +66,19 @@ $height: 100vh;
 .lay-menu {
   position: relative;
   user-select: none;
+  width: $menu-width;
+  flex: 0 0 $menu-width;
+  transition: width $collapse-transition, flex-basis $collapse-transition;
+}
+
+.lay-menu-collapsed {
+  width: 64px;
+  flex-basis: 64px;
+
+  .menu-title,
+  .collapse-icon {
+    width: 64px;
+  }
 }
 
 
@@ -83,7 +97,8 @@ $height: 100vh;
   font-size: 16px;
   font-weight: 500;
   color: #303133;
-  transition: width 0.06s ease-in-out;
+  transition: width $collapse-transition;
+  overflow: hidden;
 
 
   .logo {
@@ -96,9 +111,24 @@ $height: 100vh;
     color: #000000d9;
     font-weight: bold;
     font-weight: 600;
+    opacity: 1;
     text-overflow: ellipsis;
     white-space: nowrap;
+    transition: opacity 0.12s ease;
 
+  }
+}
+
+.lay-menu-collapsed {
+  .system-name {
+    opacity: 0;
+    transition-delay: 0s;
+  }
+}
+
+.lay-menu-expanded {
+  .system-name {
+    opacity: 1;
   }
 }
 
@@ -108,15 +138,47 @@ $height: 100vh;
  */
 
 .el-menu-vertical {
+  width: 100% !important;
+  flex: 0 0 auto;
   height: calc($height - #{2 * $top-and-bottom-blocks-height });
   overflow: hidden;
   overflow-y: auto;
+  transition: width $collapse-transition;
+
+  &:global(.el-menu--collapse) {
+    width: 100% !important;
+  }
+
+  :global(.el-menu-item),
+  :global(.el-sub-menu__title) {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  :global(.el-menu-item),
+  :global(.el-sub-menu__title) {
+    display: flex;
+  }
+
+  :global(.el-menu-item-group__title) {
+    min-width: 0;
+    overflow: hidden;
+  }
 
   .menu-icon {
     width: 16px;
     margin-left: 2px;
     margin-right: 10px;
   }
+}
+
+.menu-label {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 
@@ -132,8 +194,69 @@ $height: 100vh;
   justify-content: flex-start;
   align-items: center;
   padding-left: 16px;
-  transition: width 0.06s ease-in-out;
+  transition: width $collapse-transition;
   background: #fff;
+  flex-shrink: 0;
+  cursor: pointer;
+
+  :global(.el-icon) {
+    opacity: 1;
+    transition: opacity 0.12s ease;
+  }
+}
+
+.lay-menu-collapsed {
+  .collapse-icon :global(.el-icon) {
+    opacity: 1;
+  }
+
+  .collapse-icon {
+    transition-delay: 0s;
+  }
+}
+
+.lay-menu-expanded {
+  .collapse-icon {
+    transition-delay: 0s;
+  }
+
+  .collapse-icon :global(.el-icon) {
+    opacity: 1;
+  }
+}
+
+.collapse-icon-middle {
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  z-index: 5;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid $border;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #606266;
+  cursor: pointer;
+  appearance: none;
+  font: inherit;
+  transform: translateY(-50%);
+  transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--el-color-primary);
+    background-color: #f5f7fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    outline: none;
+  }
+
+  :global(.el-icon) {
+    font-size: 14px;
+  }
 }
 
 
@@ -158,6 +281,18 @@ $height: 100vh;
     color: var(--color-primary);
     border-top: 1px solid var(--color-primary-base, 0.95);
   }
+
+  .collapse-icon-middle {
+    background: var(--color-primary-dark-75);
+    color: var(--color-primary);
+    border-color: var(--color-primary-base);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--color-primary-dark-8);
+      color: #fff;
+    }
+  }
 }
 
 
@@ -175,7 +310,7 @@ $height: 100vh;
 
   .horizontal-collapse-transition {
     /* 横向折叠（宽度）过渡 */
-    transition: width 0.06s ease-in-out !important;
+    transition: width $collapse-transition !important;
   }
 
   //若不添加这个，打包后宽度计算会出现1px的误差

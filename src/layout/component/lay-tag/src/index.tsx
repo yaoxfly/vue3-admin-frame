@@ -534,6 +534,7 @@ export default defineComponent({
                 <span
                   key={index}
                   class={activeTag.value === tag.path ? styles['is-active'] : ''}
+                  title={tag.title}
                   onClick={() => handleTagClick(tag.path)}
                   onContextmenu={(e) => handleContextMenu(e, tag)}
                 >

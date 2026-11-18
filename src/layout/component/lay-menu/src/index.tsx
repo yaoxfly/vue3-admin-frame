@@ -68,7 +68,7 @@ export default defineComponent({
             return (
               <el-menu-item-group>
                 {{
-                  title: () => <span>{groupTitle}</span>,
+                  title: () => <span class={styles['menu-label']} title={groupTitle}>{groupTitle}</span>,
                   default: () => renderMenu(children)
                 }}
               </el-menu-item-group>
@@ -81,7 +81,7 @@ export default defineComponent({
                   title: () => (
                     <>
                       {icon && renderIcon(icon)}
-                      <span>{item.title}</span>
+                      <span class={styles['menu-label']} title={item.title ?? ''}>{item.title}</span>
                     </>
                   ),
                   default: () => renderMenu(children)
@@ -94,7 +94,7 @@ export default defineComponent({
           return (
             <el-menu-item {...rest} onClick={() => routerPush(rest.index as string)}>
               {icon && renderIcon(icon)}
-              <span>{item.title}</span>
+              <span class={styles['menu-label']} title={item.title ?? ''}>{item.title}</span>
             </el-menu-item>
           )
         }
@@ -108,20 +108,41 @@ export default defineComponent({
     return () => (
       <div class={[
         styles['lay-menu'],
+        menuStore.getIsCollapse ? styles['lay-menu-collapsed'] : '',
+        !menuStore.getIsCollapse ? styles['lay-menu-expanded'] : '',
         !isWhiteTheme.value ? styles['lay-menu-no-white'] : ''
       ]}>
         <div class={[styles['menu-title'], { 'el-menu--collapse': menuStore.getIsCollapse }]} >
           {!setStore.config.hideLogo && <img src={props.logo} class={styles.logo}></img>}
-          <span class={styles['system-name']} style={{ opacity: menuStore.getIsCollapse ? 0 : 1 }} >Vue3AdminFrame</span>
+          <span class={styles['system-name']} >Vue3AdminFrame</span>
         </div>
         <el-menu
           {...attrs}
           class={styles['el-menu-vertical']}
           collapse={menuStore.getIsCollapse}
+          collapse-transition={false}
 
         >
           {renderMenu(props.data)}
         </el-menu>
+        <button
+          class={styles['collapse-icon-middle']}
+          type="button"
+          role="button"
+          aria-label={menuStore.getIsCollapse ? '点击展开' : '点击折叠'}
+          tabindex={0}
+          onClick={() => collapseIconClick()}
+          onKeydown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+              collapseIconClick()
+            }
+          }}
+        >
+          <el-tooltip content={menuStore.getIsCollapse ? '点击展开' : '点击折叠'} placement="right" effect="light">
+            <el-icon>{menuStore.getIsCollapse ? <Expand /> : <Fold />}</el-icon>
+          </el-tooltip>
+        </button>
         <div class={[styles['collapse-icon'], { 'el-menu--collapse': menuStore.getIsCollapse }]} onClick={() => collapseIconClick()} >
           <el-tooltip content={menuStore.getIsCollapse ? '点击展开' : '点击折叠'} placement="right" effect="light">
             <el-icon>{menuStore.getIsCollapse ? <Expand /> : <Fold />}</el-icon>

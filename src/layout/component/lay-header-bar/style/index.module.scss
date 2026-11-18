@@ -9,12 +9,46 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 16px;
+  box-sizing: border-box;
+
+  :global(.lay-breadcrumb) {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+
+    :global(.el-breadcrumb__item) {
+      min-width: 0;
+      max-width: 32%;
+    }
+
+    :global(.el-breadcrumb__inner) {
+      display: block;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    :global(.el-breadcrumb__item:last-child) {
+      flex: 1 1 auto;
+      max-width: none;
+      overflow: hidden;
+    }
+  }
+
+  :global {
+    .el-icon {
+      cursor: pointer;
+    }
+  }
 }
 
 .lay-header-bar-right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex: 0 0 auto;
 
   //兼容旧浏览器写法
   &>section:not(:last-child) {
@@ -90,4 +124,5 @@
       font-weight: bold;
     }
   }
+
 }

@@ -3,54 +3,16 @@ import styles from '../style/index.module.scss'
 import { FullScreen, Setting, Check } from '@element-plus/icons-vue'
 import LayBreadcrumb from '../../lay-breadcrumb/src'
 import { useSetStore } from '@/store/set'
+import { useTheme } from '@/hooks'
 export default defineComponent({
   name: 'LayHeaderBar',
   inheritAttrs: false,
   // 在setup函数中添加主题色管理
   setup () {
     const setStore = useSetStore()
-    const themeColors = [
-      { color: '#ffffff', name: '菜单无背景色,默认蓝' },
-      { color: '#409EFF', name: '默认蓝' },
-      { color: '#FF6A19', name: '活力橙' },
-      { color: '#5EC928', name: '清新绿' },
-      { color: '#8E3FFC', name: '优雅紫' },
-      { color: '#FF7F50', name: '珊瑚色' },
-      { color: '#00CED1', name: '深青色' }
-    ]
-
-    const hexToRgb = (hex: string) => {
-      hex = hex.replace('#', '')
-      // 处理 3 位简写，如 #5EC -> #55EECC
-      if (hex.length === 3) {
-        hex = hex.split('').map(x => x + x).join('')
-      }
-      const bigint = parseInt(hex, 16)
-      const r = (bigint >> 16) & 255
-      const g = (bigint >> 8) & 255
-      const b = bigint & 255
-
-      return `${r}, ${g}, ${b}`
-    }
-
-    // 切换主题色函数
-    const changeThemeColor = (color: string) => {
-      setStore.config.themeColor = color
-      if (color === '#ffffff') {
-        document.documentElement.style.setProperty('--color-primary-base', hexToRgb('#409EFF'))
-        // document.documentElement.style.setProperty('--border-color-base', 'var(--border-color-base)')
-        return
-      }
-      const rgb = hexToRgb(color)
-      document.documentElement.style.setProperty('--color-primary-base', rgb)
-    }
-
-    // 刷新后也能保存的颜色
-    changeThemeColor(setStore.config.themeColor)
-
+    const { themeColors, setThemeColor } = useTheme()
     // 全屏状态管理
     const fullScreen = ref(false)
-
     /**
      * 请求进入全屏模式
      * @param el - 要全屏显示的元素，默认为文档根元素
@@ -139,7 +101,9 @@ export default defineComponent({
      * 打开/关闭配置抽屉
      */
     const openDrawer = () => {
-      drawer.value.visible = !drawer.value.visible
+      console.log(drawer.value.visible, 'fffffffffffff')
+      const currentState = drawer.value.visible
+      drawer.value.visible = !currentState
     }
 
     // 在return的JSX中替换主题色区域
@@ -166,6 +130,8 @@ export default defineComponent({
           v-model={drawer.value.visible}
           title="系统配置"
           direction="rtl"
+          append-to-body={false} // 关键：不传送到 body
+          destroy-on-close={true} // 强制关闭时销毁，防止旧缓存影响
         >
           <p class={styles['drawer-title']}>主题色</p>
 
@@ -174,7 +140,7 @@ export default defineComponent({
               <div
                 key={index}
                 class={styles['theme-color-item']}
-                onClick={() => changeThemeColor(theme.color)}
+                onClick={() => setThemeColor(theme.color)}
               >
                 <div
                   class={styles['theme-color']}

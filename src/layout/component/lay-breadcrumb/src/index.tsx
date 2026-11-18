@@ -14,7 +14,7 @@ export default defineComponent({
 
     return () => (
       <>
-        <el-breadcrumb {...attrs} >
+        <el-breadcrumb class="lay-breadcrumb" {...attrs} >
           {breadcrumb.value.map((item, idx) => {
             const isLast = idx === breadcrumb.value.length - 1
             return (
