@@ -1,0 +1,40 @@
+@use '../../assets/style/base.scss' as *;
+
+.page-not-found {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: $page-background-color;
+  text-align: center;
+  height: 100%;
+
+  &__title {
+    font-size: 120px;
+    font-weight: bold;
+    color: var(--el-color-primary);
+    margin-bottom: 20px;
+  }
+
+  &__message {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+  }
+
+  &__button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: var(--el-color-primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #66b1ff;
+    }
+  }
+}

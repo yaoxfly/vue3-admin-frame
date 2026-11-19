@@ -1,6 +1,6 @@
 @use '@/assets/style/base.scss' as *;
 
-.container {
+.app-container {
   flex: 1;
   background-color: #fff;
   overflow: visible;
@@ -10,7 +10,7 @@
   position: relative;
 }
 
-.container-scroll {
+.app-container__scroll {
   position: absolute;
   top: 0;
   left: 0;
@@ -37,7 +37,7 @@
   scrollbar-color: #c0c4cc #f5f7fa;
 }
 
-.container-static {
+.app-container__static {
   height: 100%;
   width: 100%;
   overflow: hidden;

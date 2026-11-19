@@ -1,0 +1,277 @@
+@use '../../../../assets/style/base.scss' as *;
+$top-and-bottom-blocks-height: 40px;
+$height: 100vh;
+$collapse-transition: 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+
+@mixin menu-dark-theme {
+  background-color: var(--color-primary-dark-8);
+  transition: box-shadow 0.3s ease;
+  color: rgba(255, 255, 255, 0.8);
+
+  .el-menu-item {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+
+    &:not(.is-active):hover {
+      background-color: rgba(var(--color-primary-base), 0.15);
+      color: #fff;
+    }
+
+    &.is-active {
+      background-color: rgba(var(--color-primary-base), 0.75);
+      color: #fff;
+    }
+  }
+
+  .el-sub-menu {
+    .el-menu-item,
+    .el-menu-item-group {
+      background-color: var(--color-primary-dark-9);
+    }
+
+    .el-menu-item {
+      &:not(.is-active):hover {
+        background-color: rgba(var(--color-primary-base), 0.15);
+        color: #fff;
+      }
+
+      &.is-active {
+        background-color: rgba(var(--color-primary-base), 0.75);
+        color: #fff;
+      }
+    }
+
+    .el-sub-menu__title {
+      color: #fff;
+      font-weight: 500;
+
+      &:hover {
+        background-color: rgba(var(--color-primary-base), 0.15);
+        color: #fff;
+      }
+    }
+
+    .el-menu-item-group__title,
+    .el-sub-menu__icon-arrow {
+      color: rgba(255, 255, 255, 0.75);
+    }
+  }
+}
+
+.lay-menu {
+  position: relative;
+  user-select: none;
+  width: $menu-width;
+  flex: 0 0 $menu-width;
+  transition: width $collapse-transition, flex-basis $collapse-transition;
+
+  &--collapsed {
+    width: 64px;
+    flex-basis: 64px;
+
+    .lay-menu__title,
+    .lay-menu__collapse {
+      width: 64px;
+    }
+
+    .lay-menu__name {
+      opacity: 0;
+      transition-delay: 0s;
+    }
+
+    .lay-menu__collapse {
+      transition-delay: 0s;
+    }
+  }
+
+  &--expanded {
+    .lay-menu__name {
+      opacity: 1;
+    }
+
+    .lay-menu__collapse {
+      transition-delay: 0s;
+    }
+  }
+
+  &__title {
+    width: $menu-width;
+    height: $top-and-bottom-blocks-height;
+    border-right: 1px solid $border;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    color: #303133;
+    transition: width $collapse-transition;
+    overflow: hidden;
+  }
+
+  &__logo {
+    width: 32px;
+    margin-left: 18px;
+  }
+
+  &__name {
+    margin-left: 10px;
+    color: #000000d9;
+    font-weight: 600;
+    opacity: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity 0.12s ease;
+  }
+
+  &__nav {
+    width: 100% !important;
+    flex: 0 0 auto;
+    height: calc($height - #{2 * $top-and-bottom-blocks-height});
+    overflow: hidden;
+    overflow-y: auto;
+    transition: width $collapse-transition;
+
+    &.el-menu--collapse {
+      width: 100% !important;
+    }
+
+    .el-menu-item,
+    .el-sub-menu__title {
+      min-width: 0;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .el-menu-item-group__title {
+      min-width: 0;
+      overflow: hidden;
+    }
+  }
+
+  &__icon {
+    width: 16px;
+    margin-left: 2px;
+    margin-right: 10px;
+  }
+
+  &__label {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__collapse {
+    width: $menu-width;
+    height: $top-and-bottom-blocks-height;
+    border-top: 1px solid $border;
+    border-right: 1px solid $border;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 16px;
+    transition: width $collapse-transition;
+    background: #fff;
+    flex-shrink: 0;
+    cursor: pointer;
+
+    .el-icon {
+      opacity: 1;
+      transition: opacity 0.12s ease;
+    }
+  }
+
+  &__collapse-middle {
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    z-index: 5;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid $border;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #606266;
+    cursor: pointer;
+    appearance: none;
+    font: inherit;
+    transform: translateY(-50%);
+    transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--el-color-primary);
+      background-color: #f5f7fa;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      outline: none;
+    }
+
+    .el-icon {
+      font-size: 14px;
+    }
+  }
+
+  &--dark {
+    .el-menu {
+      @include menu-dark-theme;
+    }
+
+    .lay-menu__title {
+      background-color: var(--color-primary-dark-75);
+    }
+
+    .lay-menu__name {
+      color: #fff;
+    }
+
+    .lay-menu__collapse {
+      background: var(--color-primary-dark-75);
+      color: var(--color-primary);
+      border-top-color: var(--color-primary-base, 0.95);
+    }
+
+    .lay-menu__collapse-middle {
+      background: var(--color-primary-dark-75);
+      color: var(--color-primary);
+      border-color: var(--color-primary-base);
+
+      &:hover,
+      &:focus-visible {
+        background: var(--color-primary-dark-8);
+        color: #fff;
+      }
+    }
+  }
+
+  .el-menu--vertical {
+    .el-menu-item.is-active {
+      background-color: rgba(var(--color-primary-base), 0.08);
+      color: var(--color-primary);
+      font-weight: 500;
+      box-shadow: inset 0 0 0 1px rgba(var(--color-primary-base), 0.1);
+    }
+  }
+
+  .horizontal-collapse-transition {
+    transition: width $collapse-transition !important;
+  }
+
+  .el-menu--collapse {
+    width: calc(var(--el-menu-icon-width) + var(--el-menu-base-level-padding) * 2);
+  }
+}
+
+body[data-menu-theme='no-white'] {
+  .el-menu--vertical.el-menu--popup-container {
+    .el-menu--popup {
+      @include menu-dark-theme;
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { defineComponent, ref } from 'vue'
-import styles from '../style/index.module.scss'
+import '../style/index.scss'
 import { FullScreen, Setting, Check } from '@element-plus/icons-vue'
 import LayBreadcrumb from '../../lay-breadcrumb/src'
 import { useSetStore } from '@/store/set'
@@ -108,19 +108,19 @@ export default defineComponent({
 
     // 在return的JSX中替换主题色区域
     return () => (
-      <header class={styles['lay-header-bar']}>
+      <header class="lay-header-bar">
         {/* 面包屑导航 */}
         <LayBreadcrumb></LayBreadcrumb>
 
         {/* 右侧操作区域 */}
-        <div class={styles['lay-header-bar-right']}>
+        <div class="lay-header-bar__actions">
           {/* 全屏切换按钮 */}
-          <section onClick={fullScreen.value ? goExitFullscreen() : goFullscreen()}>
+          <section class="lay-header-bar__action" onClick={fullScreen.value ? goExitFullscreen() : goFullscreen()}>
             <el-icon><FullScreen /></el-icon>
           </section>
 
           {/* 设置按钮 */}
-          <section onClick={() => openDrawer()}>
+          <section class="lay-header-bar__action" onClick={() => openDrawer()}>
             <el-icon ><Setting /></el-icon>
           </section>
         </div>
@@ -133,17 +133,17 @@ export default defineComponent({
           append-to-body={false} // 关键：不传送到 body
           destroy-on-close={true} // 强制关闭时销毁，防止旧缓存影响
         >
-          <p class={styles['drawer-title']}>主题色</p>
+          <p class="lay-header-bar__drawer-title">主题色</p>
 
-          <div class={styles['theme-colors']}>
+          <div class="lay-header-bar__theme-colors">
             {themeColors.map((theme, index) => (
               <div
                 key={index}
-                class={styles['theme-color-item']}
+                class="lay-header-bar__theme-color-item"
                 onClick={() => setThemeColor(theme.color)}
               >
                 <div
-                  class={styles['theme-color']}
+                  class="lay-header-bar__theme-color"
                   style={{
                     backgroundColor: theme.color,
                     borderColor: theme.color === '#ffffff' ? 'var(--border-color-base)' : theme.color
@@ -159,11 +159,11 @@ export default defineComponent({
 
           {/* 配置项标题 */}
 
-          <p class={styles['drawer-title']}>界面显示</p>
+          <p class="lay-header-bar__drawer-title">界面显示</p>
 
           {/* 遍历配置项 */}
           {configItems.map((item) => (
-            <section class={styles['drawer-content']} key={item.key}>
+            <section class="lay-header-bar__drawer-item" key={item.key}>
               {/* 配置项标签 */}
               <p >{item.label}</p>
 

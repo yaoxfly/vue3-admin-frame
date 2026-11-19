@@ -11,12 +11,15 @@ const setStore = useSetStore()
 
 // 根据配置判断是否启用灰色模式
 const grayModeClass = computed(() => {
-  return setStore.config.grayMode ? 'gray-mode' : ''
+  return setStore.config.grayMode ? 'app--gray-mode' : ''
 })
 </script>
 
 <template>
-  <div :class="grayModeClass">
+  <div
+    class="app"
+    :class="grayModeClass"
+  >
     <router-view />
   </div>
 </template>

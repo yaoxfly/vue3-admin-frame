@@ -1,6 +1,6 @@
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed, watch, nextTick } from 'vue'
 import { ArrowLeft, ArrowRight, ArrowDown } from '@element-plus/icons-vue'
-import styles from '../style/index.module.scss'
+import '../style/index.scss'
 import { useLayTag, useMenuStore } from '@/store'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -389,15 +389,15 @@ export default defineComponent({
 
       // 更新容器样式，显示滚动阴影
       if (hasScrollBefore) {
-        containerWrapper.value.classList.add(styles['has-scroll-before'])
+        containerWrapper.value.classList.add('lay-tag__container--has-scroll-before')
       } else {
-        containerWrapper.value.classList.remove(styles['has-scroll-before'])
+        containerWrapper.value.classList.remove('lay-tag__container--has-scroll-before')
       }
 
       if (hasScrollAfter) {
-        containerWrapper.value.classList.add(styles['has-scroll-after'])
+        containerWrapper.value.classList.add('lay-tag__container--has-scroll-after')
       } else {
-        containerWrapper.value.classList.remove(styles['has-scroll-after'])
+        containerWrapper.value.classList.remove('lay-tag__container--has-scroll-after')
       }
     }
 
@@ -501,8 +501,8 @@ export default defineComponent({
 
     // 渲染组件
     return () => (
-      <div class={styles['lay-tag']}>
-      <div class={styles['lay-tag-wrapper']} onClick={hideContextMenu} style={
+      <div class="lay-tag">
+      <div class="lay-tag__wrapper" onClick={hideContextMenu} style={
           props.fill
             ? { maxWidth: '100vw' } // props.fill为true时应用100vh
             : menuStore.getIsCollapse
@@ -512,13 +512,13 @@ export default defineComponent({
         {/* 标签容器 */ }
         <div
           ref={containerWrapper}
-          class={styles['lay-tag-container']}
+          class="lay-tag__container"
         >
-          <div class={styles['lay-tag']}>
+          <div class="lay-tag">
             {/* 左侧滚动箭头 */}
             {showLeftArrow.value && (
               <div
-                class={styles['scroll-arrow-left']}
+                class={['lay-tag__arrow', 'lay-tag__arrow--left']}
                 onClick={() => scrollTo('left')}
               >
                 <el-icon><ArrowLeft /></el-icon>
@@ -527,13 +527,13 @@ export default defineComponent({
 
             {/* 标签滚动区域 */}
             <div
-              class={styles['tags-scroll']}
+              class="lay-tag__scroll"
               ref={scrollContainer}
             >
               {tags.value.map((tag: TagItem, index: number) => (
                 <span
                   key={index}
-                  class={activeTag.value === tag.path ? styles['is-active'] : ''}
+                  class={['lay-tag__item', activeTag.value === tag.path && 'lay-tag__item--active']}
                   title={tag.title}
                   onClick={() => handleTagClick(tag.path)}
                   onContextmenu={(e) => handleContextMenu(e, tag)}
@@ -548,7 +548,7 @@ export default defineComponent({
             {/* 右侧滚动箭头 */}
             {showRightArrow.value && (
               <div
-                class={styles['scroll-arrow-right']}
+                class={['lay-tag__arrow', 'lay-tag__arrow--right']}
                 onClick={() => scrollTo('right')}
               >
                 <el-icon><ArrowRight /></el-icon>
@@ -558,7 +558,7 @@ export default defineComponent({
         </div>
 
         {/* 顶部下拉菜单 */}
-        <div class={styles['lay-tag-drop-down-menu']}>
+        <div class="lay-tag__dropdown">
           <el-dropdown trigger="click" onVisibleChange={handleOpen}>
             {{
               dropdown: () => (
@@ -578,7 +578,7 @@ export default defineComponent({
         {/* 右键菜单 */}
         {contextMenuVisible.value && rightClickedTag.value && (
           <div
-            class={styles['context-menu']}
+            class="lay-tag__context-menu"
             style={{
               left: `${contextMenuX.value}px`,
               top: `${contextMenuY.value}px`

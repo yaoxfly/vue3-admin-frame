@@ -1,5 +1,5 @@
 import { defineComponent, h, PropType } from 'vue'
-import styles from '../style/index.module.scss'
+import '../style/index.scss'
 import { Expand, Fold } from '@element-plus/icons-vue'
 import { MenuItem } from './types'
 import { useRouter } from 'vue-router'
@@ -48,7 +48,7 @@ export default defineComponent({
 
     const renderIcon = (icon: any) => {
       if (typeof icon === 'string') {
-        return <img src={icon} alt="icon" class={styles['menu-icon']} />
+        return <img src={icon} alt="icon" class="lay-menu__icon" />
       } else {
         return <el-icon>{h(icon)}</el-icon>
       }
@@ -68,7 +68,7 @@ export default defineComponent({
             return (
               <el-menu-item-group>
                 {{
-                  title: () => <span class={styles['menu-label']} title={groupTitle}>{groupTitle}</span>,
+                  title: () => <span class="lay-menu__label" title={groupTitle}>{groupTitle}</span>,
                   default: () => renderMenu(children)
                 }}
               </el-menu-item-group>
@@ -81,7 +81,7 @@ export default defineComponent({
                   title: () => (
                     <>
                       {icon && renderIcon(icon)}
-                      <span class={styles['menu-label']} title={item.title ?? ''}>{item.title}</span>
+                      <span class="lay-menu__label" title={item.title ?? ''}>{item.title}</span>
                     </>
                   ),
                   default: () => renderMenu(children)
@@ -94,7 +94,7 @@ export default defineComponent({
           return (
             <el-menu-item {...rest} onClick={() => routerPush(rest.index as string)}>
               {icon && renderIcon(icon)}
-              <span class={styles['menu-label']} title={item.title ?? ''}>{item.title}</span>
+              <span class="lay-menu__label" title={item.title ?? ''}>{item.title}</span>
             </el-menu-item>
           )
         }
@@ -107,18 +107,18 @@ export default defineComponent({
 
     return () => (
       <div class={[
-        styles['lay-menu'],
-        menuStore.getIsCollapse ? styles['lay-menu-collapsed'] : '',
-        !menuStore.getIsCollapse ? styles['lay-menu-expanded'] : '',
-        !isWhiteTheme.value ? styles['lay-menu-no-white'] : ''
+        'lay-menu',
+        menuStore.getIsCollapse ? 'lay-menu--collapsed' : '',
+        !menuStore.getIsCollapse ? 'lay-menu--expanded' : '',
+        !isWhiteTheme.value ? 'lay-menu--dark' : ''
       ]}>
-        <div class={[styles['menu-title'], { 'el-menu--collapse': menuStore.getIsCollapse }]} >
-          {!setStore.config.hideLogo && <img src={props.logo} class={styles.logo}></img>}
-          <span class={styles['system-name']} >Vue3AdminFrame</span>
+        <div class={['lay-menu__title', { 'el-menu--collapse': menuStore.getIsCollapse }]} >
+          {!setStore.config.hideLogo && <img src={props.logo} class="lay-menu__logo"></img>}
+          <span class="lay-menu__name" >Vue3AdminFrame</span>
         </div>
         <el-menu
           {...attrs}
-          class={styles['el-menu-vertical']}
+          class="lay-menu__nav"
           collapse={menuStore.getIsCollapse}
           collapse-transition={false}
 
@@ -126,7 +126,7 @@ export default defineComponent({
           {renderMenu(props.data)}
         </el-menu>
         <button
-          class={styles['collapse-icon-middle']}
+          class="lay-menu__collapse-middle"
           type="button"
           role="button"
           aria-label={menuStore.getIsCollapse ? '点击展开' : '点击折叠'}
@@ -143,7 +143,7 @@ export default defineComponent({
             <el-icon>{menuStore.getIsCollapse ? <Expand /> : <Fold />}</el-icon>
           </el-tooltip>
         </button>
-        <div class={[styles['collapse-icon'], { 'el-menu--collapse': menuStore.getIsCollapse }]} onClick={() => collapseIconClick()} >
+        <div class={['lay-menu__collapse', { 'el-menu--collapse': menuStore.getIsCollapse }]} onClick={() => collapseIconClick()} >
           <el-tooltip content={menuStore.getIsCollapse ? '点击展开' : '点击折叠'} placement="right" effect="light">
             <el-icon>{menuStore.getIsCollapse ? <Expand /> : <Fold />}</el-icon>
           </el-tooltip>

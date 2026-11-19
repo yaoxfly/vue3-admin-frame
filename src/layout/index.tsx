@@ -1,7 +1,7 @@
 import LayMenu from './component/lay-menu/src'
 import LayHeaderBar from './component/lay-header-bar/src'
 import localIcon from '@/assets/logo.png'
-import styles from './index.module.scss'
+import './index.scss'
 import LayTag from './component/lay-tag/src'
 import { useMenuStore, useLayTag, useKeepAliveStore, useSetStore } from '@/store'
 import { KeepAlive } from 'vue'
@@ -17,12 +17,12 @@ export default defineComponent({
     const fill = computed(() => layTagStore.getFill)
 
     return () => (
-      <div class={styles.layout}>
+      <div class="app-layout">
         {!fill.value && <LayMenu data={menu} logo={localIcon}></LayMenu>}
-        <div class={styles['layout-right']}>
+        <div class="app-layout__main">
           {!fill.value && <LayHeaderBar></LayHeaderBar>}
           {!setStore.config.hideTag && <LayTag fill={fill.value}></LayTag>}
-          <div class={styles['router-view-container']}>
+          <div class="app-layout__content">
             <router-view>
               {({ Component }: { Component: any }) => (
                 <KeepAlive include={keepAliveStore.getCachedComponents}>

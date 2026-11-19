@@ -1,5 +1,4 @@
 import { defineComponent } from 'vue'
-// import styles from '../style/index.module.scss'
 import { useRouter } from 'vue-router'
 import { Breadcrumb } from './types'
 export default defineComponent({
